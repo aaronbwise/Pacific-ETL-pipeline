@@ -32,4 +32,4 @@ def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
 
     return df
 
-test = tonga_r1_preprocess_data(df,vm.tong)
+test = tonga_r1_preprocess_data(df,variable_mapping)
