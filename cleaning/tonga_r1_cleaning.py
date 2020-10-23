@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
-from variable_mapping import variable_mapping
+import variable_mapping as vm
 
 ########## FOR TESTING ONLY - DELETE AFTER USE ###############
 path = 'C:\\Users\\Aaron\\Google Drive\\Python_Learning\\etl_pipeline\\data\\600069_raw.csv'
@@ -32,4 +32,4 @@ def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
 
     return df
 
-test = tonga_r1_preprocess_data(df,variable_mapping)
+test = tonga_r1_preprocess_data(df,vm.to)
