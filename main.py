@@ -2,8 +2,8 @@ import os
 import pandas as pd
 import config as C
 import etl.extract as extract
-import etl.transform as transform 
-import variable_mapping as vm
+import etl.transform as transform
+import etl.cleaning.variable_mapping as vm
 
 def file_path(svy_id):
     fn = svy_id + '_raw' + '.csv'

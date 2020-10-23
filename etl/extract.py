@@ -1,10 +1,11 @@
 import os
 import json
-import config as C
 import requests
 from requests.auth import HTTPBasicAuth
 from pandas.io.json import json_normalize 
 import gc
+
+datadir = os.path.join(os.path.split(os.path.realpath(__file__))[0], 'data')
 
 def fetch_data(url, user, password, svy_id):
     target = url + svy_id
@@ -18,11 +19,14 @@ def fetch_data(url, user, password, svy_id):
 
         # Create filename with timestamp
         fn = svy_id + '.json'  
-        tot_name = os.path.join(C.DATA_DIR, fn)
-
-        # Dump data 
-        with open(tot_name, 'w') as output_file:
-            json.dump(json_data, output_file)
+        tot_name = os.path.join(datadir, fn)
+        
+        # Dump data
+        try: 
+            with open(tot_name, 'w') as output_file:
+                json.dump(json_data, output_file)
+        except:
+            print(f'The data for {svy_id} was DID NOT SAVE!')
             
         return json_data
 
@@ -34,7 +38,7 @@ def format_as_dataframe(json_data, svy_id):
     df = json_normalize(json_data)
 
     fn = svy_id + '_raw' + '.csv'
-    path = os.path.join(C.DATA_DIR, fn)
+    path = os.path.join(datadir, fn)
     df.to_csv(path, index=False)
 
     return df

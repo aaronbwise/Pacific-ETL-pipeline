@@ -1,6 +1,5 @@
-
-import cleaning.fiji_r1_cleaning as f1cl
-import cleaning.samoa_r1_cleaning as s1cl
+import etl.cleaning.fiji_r1_cleaning as f1cl
+import etl.cleaning.samoa_r1_cleaning as s1cl
 
 class CleanData:
     
