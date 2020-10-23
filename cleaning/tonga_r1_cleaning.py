@@ -1,27 +1,18 @@
 import os
 import numpy as np
 import pandas as pd
-import config as C
+from variable_mapping import variable_mapping
 
 ########## FOR TESTING ONLY - DELETE AFTER USE ###############
-def file_path(svy_id):
-    fn = svy_id + '_raw' + '.csv'
-    path = os.path.join(C.DATA_DIR, fn)
-    return path
-
-file_path_list = [file_path(svy) for svy in C.SVY_ID_DICT.values()]
-
+path = 'C:\\Users\\Aaron\\Google Drive\\Python_Learning\\etl_pipeline\\data\\600069_raw.csv'
 ## Function to generate df
 def generate_input_df(path):
      df = pd.read_csv(path)
      return df
 
-df = generate_input_df(file_path_list[2])
-
-
+df = generate_input_df(path)
 
 ################################################################
-
 
 def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     """Function to preprocess Fiji R1 data"""
@@ -40,3 +31,5 @@ def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     # df = df[final_order]
 
     return df
+
+test = tonga_r1_preprocess_data(df,vm.tong)
