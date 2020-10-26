@@ -7,6 +7,8 @@ def make_dict(path):
 
 mappingdir = os.path.join(os.path.split(os.path.realpath(__file__))[0], 'mapping')
 
+# mapping_dict_list = []  -->> Need to refactor the code below - make it DRY!!
+
 path = os.path.join(mappingdir, 'fiji_r1_api_codebook_mapping.csv')
 fiji_r1_mapping_dict = make_dict(path)
 

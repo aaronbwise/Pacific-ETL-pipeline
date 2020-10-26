@@ -1,39 +1,63 @@
-import os
+import os 
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# Insert hard coded dirname here
+# Set directory for cleaned data
+datadir = Path.cwd().parent / ('data')
 
-# ########## FOR TESTING ONLY - DELETE AFTER USE ###############
-# path = 
+def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
+    """Function to preprocess Tonga R1 data"""
+    df = df.rename(columns = col_mapping_dict)
 
-# ## Function to generate df
-# def generate_input_df(path):
-#      df = pd.read_csv(path)
-#      return df
+    # Update column order
+    col_names = frozenset(df.columns.tolist())
 
-# df = generate_input_df(path)
+    # Get values in col_order that also appear in col_names
+    final_order = [x for x in col_order_list if x in col_names]
 
-# ################################################################
+    df = df[final_order]
 
-# def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
-#     """Function to preprocess Fiji R1 data"""
-#     df = df.rename(columns = col_mapping_dict)
+    return df
 
-#     # # Add column for completed_survey
-#     # df['RESPAge'] = df['RESPAge'].astype('float64')
-#     # df['completed_svy'] = np.where((df['RESPConsent'] == 'Yes') & (df['RESPAge'] >= 18), 1, 0)
+def tonga_r1_clean_data(df):
+    # Add column for completed_survey
+    df['RESPAge'] = df['RESPAge'].astype('float64')
+    # Recode RESPAge == 99 as NaN
+    df.loc[:,'RESPAge'] = df['RESPAge'].replace({99: np.nan})
+    df['completed_svy'] = np.where((df['RESPConsent'] == 'Yes') & (df['RESPAge'] >= 18), 1, 0)
 
-#     # # Update column order
-#     # col_names = frozenset(df.columns.to_list())
+    # Drop incomplete surveys
+    df = df[df['completed_svy'] == 1]
 
-#     # # Get values in col_order that also appear in col_names
-#     # final_order = [x for x in col_order_list if x in col_names]
+    # Convert number variables to numeric format
+    cols = ['RESPAge', 'HHSize', 'HHSizeM', 'HHSizeF', 'HHSizeOth', 'HHSize04F', 'HHBreastfedF',\
+            'HHSize0514F', 'HHSize1524F', 'HHSize2554F', 'HHSize5564F', 'HHSize65aboveF', 'HHSize04M',\
+            'HHBreastfedM', 'HHSize0514M', 'HHSize1524M', 'HHSize2554M', 'HHSize5564M', 'HHSize65aboveM',\
+            'HHSize0514Oth', 'HHSize1524Oth', 'HHSize2554Oth', 'HHSize5564Oth', 'HHSize65aboveOth',\
+            'HHDisabledNb', 'FCSStap', 'FCSPulse', 'FCSDairy', 'FCSPr', 'FCSPrMeat', 'FCSMeatO', 'FCSPrFish',\
+            'FCSPrEggs', 'FCSVeg', 'FCSVegOrg', 'FCSVegGre', 'FCSFruit', 'FCSFruitOrg', 'FCSFat', 'FCSSugar',\
+            'FCSCond', 'HHIllNb', 'Hroom', 'HHDebtPaidWhen']
 
-#     # df = df[final_order]
+    df[cols] = df[cols].astype('float64')
 
-#     return df
+    # Clean values and labels
+    # Impute HHHSex from RESPSex if RESP == HHH
+    df.loc[:, 'HHHSex'] = np.where(df['RESPRelationHHH'] == 'Yes', df['RESPSex'], df['HHHSex'])
 
-# test = tonga_r1_preprocess_data(df,vm.tonga_r1_mapping_dict, vm.tonga_r1_order_list)
+    df.loc[:, 'HHygieneYN'] = df['HHygieneYN'].replace({'no': 'No', 'yes': 'Yes'})
+    df.loc[:, 'HWaterConstrYN'] = df['HWaterConstrYN'].replace({'no': 'No', 'yes': 'Yes'})
 
-# print(test.head())
+    df.loc[df['Hroom'] == 0, 'Hroom'] = np.nan
+    
+    # Write out file
+    fn = 'tonga' + '_R1' + '_cleaned' + '.csv'
+    out_path = datadir / fn
+    print(f'Outpath is: {out_path}')
+    try:
+        df.to_csv(out_path, index=False)
+        print('Tonga R1 data cleaned and SAVED!')
+    except:
+        print('Tonga R1 data DID NOT SAVE!')
+
+    return df

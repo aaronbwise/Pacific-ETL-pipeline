@@ -1,15 +1,14 @@
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
-import config as C
+
+# Set directory for cleaned data
+datadir = Path.cwd().parent / ('data')
 
 def samoa_r1_preprocess_data(df, col_mapping_dict, col_order_list):
-    """Function to preprocess Fiji R1 data"""
+    """Function to preprocess Samoa R1 data"""
     df = df.rename(columns = col_mapping_dict)
-
-    # Add column for completed_survey
-    df['RESPAge'] = df['RESPAge'].astype('float64')
-    df['completed_svy'] = np.where((df['RESPConsent'] == 'Yes') & (df['RESPAge'] >= 18), 1, 0)
 
     # Update column order
     col_names = frozenset(df.columns.to_list())
@@ -22,15 +21,15 @@ def samoa_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     return df
 
 def samoa_r1_clean_data(df):
-    # Drop incomplete surveys
-    df = df[df['completed_svy'] == 1]
 
-    # Convert dates/times to datetime format  
-    df.loc[:,'start'] = pd.to_datetime(df.start)
-    df.loc[:,'end'] = pd.to_datetime(df.end)
-
+    # Add column for completed_survey
+    df['RESPAge'] = df['RESPAge'].astype('float64')
     # Recode RESPAge == 99 as NaN
     df.loc[:,'RESPAge'] = df['RESPAge'].replace({99: np.nan})
+    df['completed_svy'] = np.where((df['RESPConsent'] == 'Yes') & (df['RESPAge'] >= 18), 1, 0)
+
+    # Drop incomplete surveys
+    df = df[df['completed_svy'] == 1]
 
     # Convert number variables to numeric format
     cols = ['RESPAge', 'HHSize', 'HHSizeM', 'HHSizeF', 'HHSizeOth', 'HHSize04F', 'HHBreastfedF',\
@@ -59,7 +58,11 @@ def samoa_r1_clean_data(df):
     
     # Write out file
     fn = 'samoa' + '_R1' + '_cleaned' + '.csv'
-    out_path = os.path.join(C.DATA_DIR, fn)
-    df.to_csv(out_path, index=False)
+    out_path = datadir / fn
+    try:
+        df.to_csv(out_path, index=False)
+        print('Samoa R1 data cleaned and SAVED!')
+    except:
+        print('Samoa R1 data DID NOT SAVE!')
 
     return df

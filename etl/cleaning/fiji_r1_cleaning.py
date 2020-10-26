@@ -1,15 +1,14 @@
 import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
-# Insert hard coded dirname here
+# Set directory for cleaned data
+datadir = Path.cwd().parent.joinpath('data')
 
 def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     """Function to preprocess Fiji R1 data"""
     df = df.rename(columns = col_mapping_dict)
-
-    # Add column for completed_survey
-    df['completed_svy'] = np.where((df['RESPConsent'] == 'yes') & (df['RESPDob'] == 'yes'), 1, 0)
 
     # Update column order
     col_names = frozenset(df.columns.to_list())
@@ -35,14 +34,12 @@ def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     return df
 
 def fiji_r1_clean_data(df):
+    
+    # Add column for completed_survey
+    df['completed_svy'] = np.where((df['RESPConsent'] == 'yes') & (df['RESPDob'] == 'yes'), 1, 0)
+
     # Drop incomplete surveys
     df = df[df['completed_svy'] == 1]
-
-    # Convert dates/times to datetime format  
-    df.loc[:,'start'] = pd.to_datetime(df.start)
-    df.loc[:,'end'] = pd.to_datetime(df.end)
-
-    #### --->>>> CLEAN ON DATES??????
 
     # Convert number variables to numeric format
     cols = ['RESPAge', 'HHSize', 'HHSizeF', 'HHSize04F', 'HHBreastfedF', 'HHSize0414F', 'HHSize1524F', 'HHSize2554F',\
@@ -190,8 +187,12 @@ def fiji_r1_clean_data(df):
     
     # Write out file
     fn = 'fiji' + '_R1' + '_cleaned' + '.csv'
-    out_path = os.path.join(C.DATA_DIR, fn)
-    df.to_csv(out_path, index=False)
+    out_path = datadir / fn
+    try:
+        df.to_csv(out_path, index=False)
+        print('Fiji R1 data cleaned and SAVED!')
+    except:
+        print('Fiji R1 data DID NOT SAVE!')
 
     return df
 
