@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import json
 import requests
 from requests.auth import HTTPBasicAuth
@@ -6,8 +7,7 @@ from pandas.io.json import json_normalize
 import gc
 
 # Set data directory
-datadir = os.path.join(os.path.split(os.path.realpath(__file__))[0], 'data')
-
+datadir = Path.cwd().joinpath('data')
 
 def fetch_data(url, user, password, svy_id):
     target = url + svy_id
