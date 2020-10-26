@@ -1,6 +1,26 @@
 import etl.cleaning.fiji_r1_cleaning as f1cl
 import etl.cleaning.samoa_r1_cleaning as s1cl
 
+
+# def file_path(svy_id):
+#     fn = svy_id + '_raw' + '.csv'
+#     path = os.path.join(datadir, fn)
+#     return path
+
+# file_path_list = [file_path(svy) for svy in C.SVY_ID_DICT.values()]
+
+# # Function to generate df
+# def generate_input_df(path):
+#      df = pd.read_csv(path)
+#      return df
+
+# list_of_dfs = [generate_input_df(path) for path in file_path_list]
+# list_of_rounds = list(C.SVY_ID_DICT.keys())
+
+# # Create dict with round, df pairs
+# df_dict = dict(zip(list_of_rounds, list_of_dfs))
+
+
 class CleanData:
     
     def __init__(self, df_dict, col_mapping_dict, col_order_list):

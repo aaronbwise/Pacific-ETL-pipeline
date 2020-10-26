@@ -5,7 +5,9 @@ from requests.auth import HTTPBasicAuth
 from pandas.io.json import json_normalize 
 import gc
 
+# Set data directory
 datadir = os.path.join(os.path.split(os.path.realpath(__file__))[0], 'data')
+
 
 def fetch_data(url, user, password, svy_id):
     target = url + svy_id
@@ -25,8 +27,9 @@ def fetch_data(url, user, password, svy_id):
         try: 
             with open(tot_name, 'w') as output_file:
                 json.dump(json_data, output_file)
+            print(f'The raw JSON data for {svy_id} was SAVED!')
         except:
-            print(f'The data for {svy_id} was DID NOT SAVE!')
+            print(f'The raw JSON data for {svy_id} DID NOT SAVE!')
             
         return json_data
 
@@ -39,7 +42,11 @@ def format_as_dataframe(json_data, svy_id):
 
     fn = svy_id + '_raw' + '.csv'
     path = os.path.join(datadir, fn)
-    df.to_csv(path, index=False)
+    try:
+        df.to_csv(path, index=False)
+        print(f'The raw CSV data for {svy_id} was SAVED!')
+    except:
+        print(f'The raw CSV data for {svy_id} DID NOT SAVE!')
 
     return df
 

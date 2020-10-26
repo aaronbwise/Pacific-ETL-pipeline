@@ -1,8 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
-import config as C
 
+# Insert hard coded dirname here
 
 def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     """Function to preprocess Fiji R1 data"""

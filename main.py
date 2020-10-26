@@ -1,31 +1,31 @@
 import os
 import pandas as pd
-import config as C
+import json
+from dotenv import load_dotenv
 import etl.extract as extract
 import etl.transform as transform
 import etl.cleaning.variable_mapping as vm
 
-def file_path(svy_id):
-    fn = svy_id + '_raw' + '.csv'
-    path = os.path.join(C.DATA_DIR, fn)
-    return path
 
-file_path_list = [file_path(svy) for svy in C.SVY_ID_DICT.values()]
+# Get config info
+config_data = json.load(open('config.json'))
 
-## Function to generate df
-def generate_input_df(path):
-     df = pd.read_csv(path)
-     return df
+# Get API username and password
+load_dotenv()
+user = os.getenv('user')
+password = os.getenv('password')
 
-list_of_dfs = [generate_input_df(path) for path in file_path_list]
-list_of_rounds = list(C.SVY_ID_DICT.keys())
+url = config_data['kobo']['url']
 
-# Create dict with round, df pairs
-df_dict = dict(zip(list_of_rounds, list_of_dfs))
+# Survey Round and ID dictionary
+svy_dict = config_data['svy_dict']
+
+fiji_svy = config_data['svy_dict']['Fiji_R1']
+
 
 
 if __name__ == "__main__":
-    # [extract.format_as_dataframe(extract.fetch_data(C.URL, C.USER, C.PASSWORD, svy), svy) for svy in C.SVY_ID_DICT.values()]
+    extract.format_as_dataframe(extract.fetch_data(url, user, password, fiji_svy), fiji_svy)
 
-    samoa_r1 = transform.CleanData(df_dict, vm.samoa_r1_mapping_dict, vm.samoa_r1_order_list)
-    samoa_r1.clean_samoa_data()
+    # samoa_r1 = transform.CleanData(df_dict, vm.samoa_r1_mapping_dict, vm.samoa_r1_order_list)
+    # samoa_r1.clean_samoa_data()

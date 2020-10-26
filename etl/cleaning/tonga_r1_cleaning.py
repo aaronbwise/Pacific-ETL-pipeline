@@ -2,8 +2,11 @@ import os
 import numpy as np
 import pandas as pd
 
+# Insert hard coded dirname here
+
 # ########## FOR TESTING ONLY - DELETE AFTER USE ###############
-# path = 'C:\\Users\\Aaron\\Google Drive\\Python_Learning\\etl_pipeline\\data\\600069_raw.csv'
+# path = 
+
 # ## Function to generate df
 # def generate_input_df(path):
 #      df = pd.read_csv(path)
