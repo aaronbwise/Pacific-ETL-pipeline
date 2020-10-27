@@ -13,7 +13,7 @@ if ENV == 'dev':
     DATABASE_URI = 'postgresql://postgres:P@ssw1rd@localhost/mvam'
 else:
     # deployment database
-    pass
+    DATABASE_URI = 'postgresql://mvam:VAMdb@2020@10.99.87.10:5432/pacific_mvam'
 
 engine = db.create_engine(DATABASE_URI)
 
