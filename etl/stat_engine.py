@@ -2,12 +2,10 @@ import os
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from loading import fiji_engine
+from loading.fiji_engine import fiji_r1_engine
 
 # Set directory for cleaned data
 # datadir = Path.cwd().joinpath('etl', 'data')
-
-test_file = r'C:\Users\Aaron\Google Drive\Python_Learning\etl_pipeline\etl\data\fiji_R1_analysed.csv'
 
 class StatEngine:
 
@@ -16,18 +14,23 @@ class StatEngine:
 
     ## FOR LOOP OR LIST COMPREHENSION???
     def statengine(self):
-        self.fiji_engine()
-        return
+        df = self.fiji_engine()
+        return df
 
     def fiji_engine(self):
-        df = self.generate_df()
-        output = fiji_engine(df)
-        return output
+        try:
+            df = self.generate_df()
+            output_df = fiji_r1_engine(df)
+            print('Output created!')
+        except:
+            print('Output not created')
+        return output_df
     
     def generate_df(self):
         # Fiji_R1
-        df = pd.read_csv(self.path)
+        try:
+            df = pd.read_csv(self.path)
+            print('File loaded, df created!')
+        except:
+            print('File did not load')
         return df
-
-statObj = StatEngine(test_file)
-statObj.statengine()

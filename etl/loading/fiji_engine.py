@@ -1,7 +1,7 @@
 import pandas as pd
-from aw_analytics import output_mean_tableau
+from loading.aw_analytics import output_mean_tableau
 
-def fiji_engine(df):
+def fiji_r1_engine(df):
     # Drop FCS = np.nan
     df = df[df['FCS_Score'].isna() == False]
 
@@ -28,6 +28,6 @@ def fiji_engine(df):
 
     df = df[keep_vars]
 
-    output = pd.concat([output_mean_tableau(df, var, ind_vars, wt='weight_scl') for var in dep_vars])
+    output_df = pd.concat([output_mean_tableau(df, var, ind_vars, wt='weight_scl') for var in dep_vars])
 
-    return output
+    return output_df

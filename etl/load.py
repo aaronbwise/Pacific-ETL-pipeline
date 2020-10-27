@@ -1,10 +1,9 @@
 # Load data into postgreSQL database
 import sqlalchemy as db
 from models import Base, LoadFiji
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.orm import sessionmaker
+from stat_engine import StatEngine
 
-# Analytical helper functions
-from aw_analytics import mean_wt, median_wt, output_mean_tableau
 
 # Value to switch between development and production
 ENV = 'dev'
@@ -18,22 +17,13 @@ else:
 
 engine = db.create_engine(DATABASE_URI)
 
-Session = sessionmaker(bind=engine)
-
 def recreate_database():
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
+recreate_database()
+test_file = r'C:\Users\Aaron\Google Drive\Python_Learning\etl_pipeline\etl\data\fiji_R1_analysed.csv'
 
-
-if __name__ == "__main__":
-    recreate_database()
-    s = Session()
-    # test = LoadFiji(Round='Round_1', Demograph='Round', Demograph_Value='Round_1',
-    # Indicator='FCG_Acceptable', Indicator_Value=39.0, Weighted_Count=409.6)
-    s.add(test)
-    s.commit()
-    s.close()
-
-
+load_df = StatEngine(test_file).statengine()
+load_df.to_sql('fiji', engine, index=False, if_exists='replace')
 
