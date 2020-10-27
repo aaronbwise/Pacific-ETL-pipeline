@@ -2,15 +2,17 @@ import pandas as pd
 from pathlib import Path
 import json
 
+# !! Need a way to label/order csv import
+
 # Get round_dict
-config_path = Path.cwd().parent.joinpath('config.json')
+config_path = Path.cwd().joinpath('config.json')
 round_dict = json.load(open(config_path))['round_dict']
 
 # Set directory for cleaned data
-datadir = Path.cwd().joinpath('data')
+datadir = Path.cwd().joinpath('etl', 'data')
 
 # Set directory for mapping and order data
-mappingdir = Path.cwd().joinpath('cleaning/mapping')
+mappingdir = Path.cwd().joinpath('etl', 'cleaning', 'mapping')
 
 
 ### 1. ---- Create list of survey dfs

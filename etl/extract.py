@@ -7,7 +7,7 @@ from pandas.io.json import json_normalize
 import gc
 
 # Set data directory
-datadir = Path.cwd().joinpath('data')
+datadir = Path.cwd().joinpath('etl', 'data')
 
 def fetch_data(url, user, password, svy_id):
     target = url + svy_id

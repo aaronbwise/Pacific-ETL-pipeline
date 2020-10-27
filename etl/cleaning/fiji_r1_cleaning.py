@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 # Set directory for cleaned data
-datadir = Path.cwd().parent.joinpath('data')
+datadir = Path.cwd().joinpath('etl', 'data')
 
 def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     """Function to preprocess Fiji R1 data"""
@@ -26,7 +26,7 @@ def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     df['RESPWorryRsns_2'] = df.RESPWorryRsns.str.split(' ').str[1]
 
     # Recode RESPAge == 99 as NaN
-    df['RESPAge'] = df['RESPAge'].astype('float64').replace({99: np.nan})
+    df.loc[:, 'RESPAge'] = df['RESPAge'].astype('float64').replace({99: np.nan})
 
     # Insert Round
     df.insert(0, 'Round', 'R1')
@@ -183,11 +183,12 @@ def fiji_r1_clean_data(df):
                                                 'construction_repair_expense': 'Construction_repair expense', 'other': 'Other'})
     
     # Remove Hroom == 0
-    df.loc[df['Hroom'] == 0, 'Hroom'] = np.nan
+    df.loc[:, 'Hroom'] = df.replace({0:np.nan})
     
     # Write out file
     fn = 'fiji' + '_R1' + '_cleaned' + '.csv'
-    out_path = datadir / fn
+    out_path = datadir.joinpath(fn)
+    print(f'Clean file being saved to: {out_path}')
     try:
         df.to_csv(out_path, index=False)
         print('Fiji R1 data cleaned and SAVED!')
