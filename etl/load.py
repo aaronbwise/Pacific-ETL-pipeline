@@ -1,8 +1,9 @@
 # Load data into postgreSQL database
 import sqlalchemy as db
-from models import Base, LoadFiji
-# from sqlalchemy.orm import sessionmaker
+from models import Base
 from stat_engine import StatEngine
+
+
 
 
 # Value to switch between development and production
@@ -13,7 +14,7 @@ if ENV == 'dev':
     DATABASE_URI = 'postgresql://postgres:P@ssw1rd@localhost/mvam'
 else:
     # deployment database
-    DATABASE_URI = 'postgresql://mvam:VAMdb@2020@10.99.87.10:5432/pacific_mvam'
+    # DATABASE_URI = 'postgresql://'  -> pull from config file
 
 engine = db.create_engine(DATABASE_URI)
 
