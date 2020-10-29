@@ -7,7 +7,7 @@ import pandas as pd
 datadir = Path.cwd().joinpath('etl', 'data')
 
 def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
-    """Function to preprocess Fiji R1 data"""
+    """Function to preprocess Fiji_R1 data"""
     df = df.rename(columns = col_mapping_dict)
 
     # Update column order
@@ -33,7 +33,7 @@ def fiji_r1_preprocess_data(df, col_mapping_dict, col_order_list):
 
     return df
 
-def fiji_r1_clean_data(df):
+def fiji_r1_clean_data(df, svy_id):
     
     # Add column for completed_survey
     df['completed_svy'] = np.where((df['RESPConsent'] == 'yes') & (df['RESPDob'] == 'yes'), 1, 0)
@@ -186,14 +186,14 @@ def fiji_r1_clean_data(df):
     df.loc[:, 'Hroom'] = df.replace({0:np.nan})
     
     # Write out file
-    fn = 'fiji' + '_R1' + '_cleaned' + '.csv'
+    fn = svy_id + '_cleaned' + '.csv'
     out_path = datadir.joinpath(fn)
     print(f'Clean file being saved to: {out_path}')
     try:
         df.to_csv(out_path, index=False)
-        print('Fiji R1 data cleaned and SAVED!')
+        print(f'{svy_id} data cleaned and SAVED!')
     except:
-        print('Fiji R1 data DID NOT SAVE!')
+        print(f'{svy_id} data DID NOT SAVE!')
 
     return df
 

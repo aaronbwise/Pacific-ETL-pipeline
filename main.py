@@ -1,26 +1,35 @@
 import os
 import pandas as pd
 import json
-import etl.extract as extract
-import etl.transform as transform
-from etl.survey_dict import survey_dict
+from etl.extract import ExtractData
+from etl.transform import TransformData
+from etl.load import LoadData
 
-
-# Get config info
+# Get config data
 config_data = json.load(open('config.json'))
 
-# Get API username and password
+# Get Kobo config
 url = config_data['kobo']['url']
 user = config_data['kobo']['user']
 password = config_data['kobo']['password']
 
 # Survey Round and ID dictionary
 round_dict = config_data['round_dict']
-fiji_r1_id = round_dict['Fiji_R1']
+
+# Value to switch between development and production databases
+ENV = 'DEV'
+
 
 
 if __name__ == "__main__":
-    extract.format_as_dataframe(extract.fetch_data(url, user, password, fiji_r1_id), fiji_r1_id)
+    # # Get raw data from API
+    # extractObj = ExtractData(url, user, password, round_dict)
+    # extractObj.extract()
+    
+    # Transform Data
+    transformObj = TransformData(round_dict)
+    transformObj.transform()
 
-    obj = transform.TransformData(survey_dict)
-    obj.transform()
+    # Load data
+    loadObj = LoadData(round_dict, ENV)
+    loadObj.load()

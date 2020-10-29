@@ -14,7 +14,7 @@ class LoadFiji(Base):
     Weighted_Count = Column(Float)
 
     def __repr__(self):
-        return f"<LoadPacificMVAM(Round={self.Round}, Demograph_Value={self.Demograph_Value},\
+        return f"<LoadFiji(Round={self.Round}, Demograph_Value={self.Demograph_Value},\
             Indicator={self.Indicator}, Indicator_Value={self.Indicator_Value}>)"
 
 class LoadSamoa(Base):
@@ -28,5 +28,5 @@ class LoadSamoa(Base):
     Weighted_Count = Column(Float)
 
     def __repr__(self):
-        return f"<LoadPacificMVAM(Round={self.Round}, Demograph_Value={self.Demograph_Value},\
+        return f"<LoadSamoa(Round={self.Round}, Demograph_Value={self.Demograph_Value},\
             Indicator={self.Indicator}, Indicator_Value={self.Indicator_Value}>)"

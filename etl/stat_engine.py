@@ -1,11 +1,5 @@
-import os
-import numpy as np
 import pandas as pd
-from pathlib import Path
-from loading.fiji_engine import fiji_r1_engine
-
-# Set directory for cleaned data
-# datadir = Path.cwd().joinpath('etl', 'data')
+from etl.loading.fiji_engine import fiji_r1_engine
 
 class StatEngine:
 
