@@ -1,6 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import etl.loading.fiji_engine as fe
+import etl.loading.samoa_engine as se
 
 class StatEngine:
 
@@ -11,28 +12,29 @@ class StatEngine:
         self.round_dict = round_dict
 
     def stat_engine(self):
-        tableau_output_dict = self.generate_output_tableau()
+        tableau_output_dict = self.generate_tableau_dict()
+        return tableau_output_dict
+        
+    def generate_tableau_dict(self):
+        tableau_output_dict = {}
+        for svy_id in self.round_dict.values():
+            tableau_output_dict[svy_id] = self.generate_output_tableau(svy_id)
         return tableau_output_dict
 
-    def generate_output_tableau(self):
+    def generate_output_tableau(self, svy_id):
         """
         Generate dictionary with svy_id and output for Tableau (ie long form)
         """
-        tableau_output_dict = {}
-        for svy_id in self.round_dict.values():
-            
-            df = self.generate_df(svy_id)
+        df = self.generate_df(svy_id)
 
-            # Need to add column/way to determine if data is analysed
-
-            if svy_id == '556482':
-                output = fe.fiji_r1_engine(df)
-                tableau_output_dict[svy_id] = output
-            else:
-                output = None
-                tableau_output_dict[svy_id] = output
-            
-            return tableau_output_dict
+        if svy_id == '556482':
+            output = fe.fiji_r1_engine(df)
+        elif svy_id == '600087':
+            output = se.samoa_r1_engine(df)
+        else:
+            output = None
+        
+        return output
 
     def generate_df(self, svy_id):
         fn = svy_id + '_analysed' + '.csv'

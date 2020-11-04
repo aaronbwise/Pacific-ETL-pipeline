@@ -21,10 +21,11 @@ class LoadData:
         print(len(self.tableau_output_dict))
 
     def load_data(self):
-        self.load_engine()
+        for svy_id, output in self.tableau_output_dict.items():
+            self.load_engine(svy_id, output)
         return
     
-    def load_engine(self):
+    def load_engine(self, svy_id, output):
 
         if self.ENV == 'DEV':
             # Development database config
@@ -40,22 +41,22 @@ class LoadData:
                     self.dep_config['db_name']
             self.conn_uri = f"postgresql://{self.conn_str}"
 
+        # Create engine
         self.engine = db.create_engine(self.conn_uri)
 
-        for svy_id, output in self.tableau_output_dict.items():
-            if output is not None:
-                if svy_id == '556482' or svy_id == '587333':
-                    output.to_sql('fiji', self.engine, index=False, if_exists='append')
-                    print(f'Data for {svy_id} was loaded to db successfully!')
+        if output is not None:
+            if svy_id == '556482' or svy_id == '587333':
+                output.to_sql('fiji', self.engine, index=False, if_exists='replace')
+                print(f'Data for {svy_id} was loaded to db successfully!')
 
-                elif svy_id == '600069' or svy_id == '600072':
-                    output.to_sql('tonga', self.engine, index=False, if_exists='append')
-                    print(f'Data for {svy_id} was loaded to db successfully!')
+            elif svy_id == '600069' or svy_id == '600072':
+                output.to_sql('tonga', self.engine, index=False, if_exists='replace')
+                print(f'Data for {svy_id} was loaded to db successfully!')
 
-                elif svy_id == '600087' or svy_id == '600088':
-                    output.to_sql('samoa', self.engine, index=False, if_exists='append')
-                    print(f'Data for {svy_id} was loaded to db successfully!')
-                else:
-                    print(f'Uh oh! Something went wrong - check tableau_output_dict')
+            elif svy_id == '600087' or svy_id == '600088':
+                output.to_sql('samoa', self.engine, index=False, if_exists='replace')
+                print(f'Data for {svy_id} was loaded to db successfully!')
             else:
-                print(f'There is no tableau data for {svy_id}')
+                print(f'Uh oh! Something went wrong - check tableau_output_dict')
+        else:
+            print(f'There is no tableau data for {svy_id}')

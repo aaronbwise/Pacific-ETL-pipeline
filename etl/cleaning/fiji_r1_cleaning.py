@@ -41,6 +41,16 @@ def fiji_r1_clean_data(df, svy_id):
     # Drop incomplete surveys
     df = df[df['completed_svy'] == 1]
 
+    # Drop any surveys not in Round 1
+    df.loc[:, 'start'] = pd.to_datetime(df.start, utc=True)
+    df.loc[:, 'end'] = pd.to_datetime(df.end, utc=True)
+
+    # Categorize survey round according to Digicel dates
+    r1_start_ts = pd.to_datetime('06/10/2020').tz_localize(tz='UTC')
+    r1_end_ts = pd.to_datetime('07/15/2020').tz_localize(tz='UTC')
+
+    df = df[(df['start'] >= r1_start_ts) & (df['start'] <= r1_end_ts)]
+
     # Convert number variables to numeric format
     cols = ['RESPAge', 'HHSize', 'HHSizeF', 'HHSize04F', 'HHBreastfedF', 'HHSize0414F', 'HHSize1524F', 'HHSize2554F',\
             'HHSize5564F', 'HHSize65aboveF', 'HHSizeM', 'HHSize04M', 'HHBreastfedM', 'HHSize0414M', 'HHSize1524M',\

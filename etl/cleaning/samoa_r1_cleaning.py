@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 # Set directory for cleaned data
-datadir = Path.cwd().parent / ('data')
+datadir = Path.cwd().joinpath('etl', 'data')
 
 def samoa_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     """Function to preprocess Samoa R1 data"""
@@ -20,7 +20,7 @@ def samoa_r1_preprocess_data(df, col_mapping_dict, col_order_list):
 
     return df
 
-def samoa_r1_clean_data(df):
+def samoa_r1_clean_data(df, svy_id):
 
     # Add column for completed_survey
     df['RESPAge'] = df['RESPAge'].astype('float64')
@@ -30,6 +30,17 @@ def samoa_r1_clean_data(df):
 
     # Drop incomplete surveys
     df = df[df['completed_svy'] == 1]
+
+    # Convert dates/times to datetime format
+    df['start'] = pd.to_datetime(df.start)
+    df['end'] = pd.to_datetime(df.end)
+
+    # Remove surveys outside R1
+    # Create R1 timestamps
+    ts_start = pd.to_datetime('08/14/2020', utc=True)
+    ts_end = pd.to_datetime('09/19/2020', utc=True)
+
+    df = df[(df['start'] >= ts_start) & (df['start'] <= ts_end)]
 
     # Convert number variables to numeric format
     cols = ['RESPAge', 'HHSize', 'HHSizeM', 'HHSizeF', 'HHSizeOth', 'HHSize04F', 'HHBreastfedF',\
@@ -57,12 +68,13 @@ def samoa_r1_clean_data(df):
     df.loc[:,yndk_cols] = df.replace({'no': 'No', 'yes': 'Yes', 'dontknow':'DK'})
     
     # Write out file
-    fn = 'samoa' + '_R1' + '_cleaned' + '.csv'
-    out_path = datadir / fn
+    fn = svy_id + '_cleaned' + '.csv'
+    out_path = datadir.joinpath(fn)
+    print(f'Clean file being saved to: {out_path}')
     try:
         df.to_csv(out_path, index=False)
-        print('Samoa R1 data cleaned and SAVED!')
+        print(f'{svy_id} data cleaned and SAVED!')
     except:
-        print('Samoa R1 data DID NOT SAVE!')
+        print(f'{svy_id} data DID NOT SAVE!')
 
     return df

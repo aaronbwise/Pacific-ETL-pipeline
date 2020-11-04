@@ -9,8 +9,8 @@ import etl.analysis.fiji_r1_analysis as f1an
 # import etl.cleaning.tonga_r1_cleaning as t1cl
 # import etl.analysis.tonga_r1_analysis as t1an
 
-# import etl.cleaning.samoa_r1_cleaning as s1cl
-# import etl.analysis.samoa_r1_analysis as s1an
+import etl.cleaning.samoa_r1_cleaning as s1cl
+import etl.analysis.samoa_r1_analysis as s1an
 
 
 class TransformData:
@@ -30,24 +30,23 @@ class TransformData:
 
 
     def transform(self):
-        self.analyse_data()
+        for svy_id in self.round_dict.values(): 
+            self.analyse_data(svy_id)
         return
     
-    def analyse_data(self):
+    def analyse_data(self, svy_id):
 
-        for svy_id in self.round_dict.values():
-            clean_df = self.clean_data(svy_id)
+        clean_df = self.clean_data(svy_id)
 
-            if svy_id == '556482':
-                analysed_df = f1an.fiji_r1_analyze_data(clean_df, svy_id)
-            # elif svy_id == '600069':
-            #     analysed_df = t1an.fiji_r1_analyze_data(clean_df)
-            # elif svy_id == '600087':
-            #     analysed_df = s1an.fiji_r1_analyze_data(clean_df)
-            else:
-                analysed_df = None
-            print(f'{svy_id} analysis complete!')
-            return analysed_df
+        if svy_id == '556482':
+            analysed_df = f1an.fiji_r1_analyze_data(clean_df, svy_id)
+        # elif svy_id == '600069':
+        #     analysed_df = t1an.fiji_r1_analyze_data(clean_df)
+        elif svy_id == '600087':
+            analysed_df = s1an.samoa_r1_analyze_data(clean_df, svy_id)
+        else:
+            analysed_df = None
+        return analysed_df
 
     def clean_data(self, svy_id):
         df = self.generate_survey_df(svy_id)
@@ -56,11 +55,10 @@ class TransformData:
             clean_df = f1cl.fiji_r1_clean_data(f1cl.fiji_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         # elif svy_id == '600069': # Tonga_R1
         #     clean_df = t1cl.fiji_r1_clean_data(t1cl.fiji_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]))
-        # elif svy_id == '600087': # Samoa_R1
-        #     clean_df = s1cl.fiji_r1_clean_data(s1cl.fiji_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]))
+        elif svy_id == '600087': # Samoa_R1
+            clean_df = s1cl.samoa_r1_clean_data(s1cl.samoa_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         else:
             clean_df = None
-        print(f'{svy_id} cleaning complete!')
         return clean_df
 
     def generate_survey_df(self, svy_id):
