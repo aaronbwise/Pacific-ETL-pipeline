@@ -1,5 +1,3 @@
-import os
-import pandas as pd
 import json
 from etl.extract import ExtractData
 from etl.transform import TransformData
@@ -20,7 +18,6 @@ round_dict = config_data['round_dict']
 ENV = 'DEV'
 
 
-
 if __name__ == "__main__":
     # # Get raw data from API
     # extractObj = ExtractData(url, user, password, round_dict)
@@ -32,4 +29,4 @@ if __name__ == "__main__":
 
     # Load data
     loadObj = LoadData(round_dict, ENV)
-    loadObj.load()
+    loadObj.load_data()

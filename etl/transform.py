@@ -13,7 +13,6 @@ import etl.analysis.fiji_r1_analysis as f1an
 # import etl.analysis.samoa_r1_analysis as s1an
 
 
-
 class TransformData:
 
     # Set data directory
