@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 import requests
 from requests.auth import HTTPBasicAuth
-from pandas.io.json import json_normalize 
+import pandas as pd
 import gc
 
 
@@ -27,7 +27,7 @@ class ExtractData:
 
     def format_as_dataframe(self, svy_id):
         json_data = self.fetch_data(svy_id)
-        df = json_normalize(json_data)
+        df = pd.json_normalize(json_data)
 
         fn = svy_id + '.csv'
         path = self.datadir.joinpath(fn)

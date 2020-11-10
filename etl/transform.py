@@ -6,8 +6,8 @@ from etl.clean_inputs import CleaningInputs
 import etl.cleaning.fiji_r1_cleaning as f1cl
 import etl.analysis.fiji_r1_analysis as f1an
 
-# import etl.cleaning.tonga_r1_cleaning as t1cl
-# import etl.analysis.tonga_r1_analysis as t1an
+import etl.cleaning.tonga_r1_cleaning as t1cl
+import etl.analysis.tonga_r1_analysis as t1an
 
 import etl.cleaning.samoa_r1_cleaning as s1cl
 import etl.analysis.samoa_r1_analysis as s1an
@@ -40,8 +40,8 @@ class TransformData:
 
         if svy_id == '556482':
             analysed_df = f1an.fiji_r1_analyze_data(clean_df, svy_id)
-        # elif svy_id == '600069':
-        #     analysed_df = t1an.fiji_r1_analyze_data(clean_df)
+        elif svy_id == '600069':
+            analysed_df = t1an.tonga_r1_analyze_data(clean_df, svy_id)
         elif svy_id == '600087':
             analysed_df = s1an.samoa_r1_analyze_data(clean_df, svy_id)
         else:
@@ -53,8 +53,8 @@ class TransformData:
 
         if svy_id == '556482': # Fiji_R1
             clean_df = f1cl.fiji_r1_clean_data(f1cl.fiji_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
-        # elif svy_id == '600069': # Tonga_R1
-        #     clean_df = t1cl.fiji_r1_clean_data(t1cl.fiji_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]))
+        elif svy_id == '600069': # Tonga_R1
+            clean_df = t1cl.tonga_r1_clean_data(t1cl.tonga_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         elif svy_id == '600087': # Samoa_R1
             clean_df = s1cl.samoa_r1_clean_data(s1cl.samoa_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         else:

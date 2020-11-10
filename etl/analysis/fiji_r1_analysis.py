@@ -4,13 +4,9 @@ import pandas as pd
 
 # Set directory for cleaned data
 datadir = Path.cwd().joinpath('etl', 'data')
-weighstdir = Path.cwd().joinpath('etl', 'analysis', 'weights')
 
 def fiji_r1_analyze_data(df, svy_id):
     """Function to analyze Fiji R1 data"""
-    # Load and merge HH weight file
-    weights = pd.read_csv(weighstdir.joinpath('fiji_r1_weights.csv'), usecols=['ADM2Name', 'weight_scl'])
-    df = pd.merge(df, weights, on='ADM2Name', how='left')  # -> improve
 
     ### Create Grouping Variables
     ## -- Divison Groups
@@ -225,7 +221,7 @@ def fiji_r1_analyze_data(df, svy_id):
     # Write out file
     fn = svy_id + '_analysed' + '.csv'
     out_path = datadir.joinpath(fn)
-    print(f'Analysed file for {svy_id} being saved to: {out_path}')
+    print(f'\n Analysed file for {svy_id} being saved to: \n {out_path} \n')
     try:
         df.to_csv(out_path, index=False)
         print(f'{svy_id} data analysed and SAVED!')

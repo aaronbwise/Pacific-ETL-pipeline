@@ -15,7 +15,7 @@ password = config_data['kobo']['password']
 round_dict = config_data['round_dict']
 
 
-# Value to switch between development and production databases
+# Value to switch between development (DEV) and production (PROD) databases
 ENV = 'DEV'
 
 
@@ -24,10 +24,10 @@ if __name__ == "__main__":
     # extractObj = ExtractData(url, user, password, round_dict)
     # extractObj.extract()
     
-    # # Transform Data
-    # transformObj = TransformData(round_dict)
-    # transformObj.transform()
+    # Transform Data
+    transformObj = TransformData(round_dict)
+    transformObj.transform()
 
-    # Load data
-    loadObj = LoadData(round_dict, ENV)
-    loadObj.load_data()
+    # # Load data
+    # loadObj = LoadData(round_dict, ENV)
+    # loadObj.load_data()

@@ -2,9 +2,10 @@ import os
 from pathlib import Path
 import numpy as np
 import pandas as pd
+import sys
 
 # Set directory for cleaned data
-datadir = Path.cwd().parent / ('data')
+datadir = Path.cwd().joinpath('etl', 'data')
 
 def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
     """Function to preprocess Tonga R1 data"""
@@ -20,7 +21,7 @@ def tonga_r1_preprocess_data(df, col_mapping_dict, col_order_list):
 
     return df
 
-def tonga_r1_clean_data(df):
+def tonga_r1_clean_data(df, svy_id):
     # Add column for completed_survey
     df['RESPAge'] = df['RESPAge'].astype('float64')
     # Recode RESPAge == 99 as NaN
@@ -51,13 +52,13 @@ def tonga_r1_clean_data(df):
     df.loc[df['Hroom'] == 0, 'Hroom'] = np.nan
     
     # Write out file
-    fn = 'tonga' + '_R1' + '_cleaned' + '.csv'
-    out_path = datadir / fn
-    print(f'Outpath is: {out_path}')
+    fn = svy_id + '_cleaned' + '.csv'
+    out_path = datadir.joinpath(fn)
+    print(f'\n Clean file being saved to: \n {out_path} \n')
     try:
         df.to_csv(out_path, index=False)
-        print('Tonga R1 data cleaned and SAVED!')
+        print(f'{svy_id} data cleaned and SAVED!')
     except:
-        print('Tonga R1 data DID NOT SAVE!')
+        print(f'{svy_id} data DID NOT SAVE!')
 
     return df

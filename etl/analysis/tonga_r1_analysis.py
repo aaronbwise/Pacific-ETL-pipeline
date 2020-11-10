@@ -5,12 +5,11 @@ import pandas as pd
 # Set directory for cleaned data
 datadir = Path.cwd().joinpath('etl', 'data')
 
-def samoa_r1_analyze_data(df, svy_id):
-    """Function to analyze Samoa R1 data"""
+def tonga_r1_analyze_data(df, svy_id):
+    """Function to analyze Tonga R1 data"""
 
     ### Create Grouping Variables
-    ## -- Depenency Ratio Category
-    dep_cols = ['HHSize04F', 'HHSize0514F', 'HHSize65aboveF', 'HHSize04M', 'HHSize0514M', 'HHSize65aboveM', 'HHSize0514Oth', 'HHSize65aboveOth']
+    dep_cols = ['HHSize04F', 'HHSize0514F', 'HHSize65aboveF', 'HHSize04M', 'HHSize0514M', 'HHSize65aboveM']
     df[dep_cols] = df[dep_cols].replace({np.nan: 0})
     df['dep_ratio'] = (df[dep_cols].apply(sum, axis=1)) / df['HHSize']
     df.loc[df['dep_ratio'] > 1] = np.nan
@@ -18,7 +17,6 @@ def samoa_r1_analyze_data(df, svy_id):
     bin_labels_3 = ['Low', 'Moderate', 'High']
     df['dep_ratio_cat'] = pd.qcut(df['dep_ratio'],
                                 q=3, labels=bin_labels_3)
-
 
     ## -- Household has Children < 5
     df.loc[(df['HHSize04F'] > 0) | (df['HHSize04M'] > 0), 'HH_04'] = 'Yes'
@@ -32,14 +30,15 @@ def samoa_r1_analyze_data(df, svy_id):
     df['HHRemitt_YN'].fillna('No', inplace=True)
 
     ## -- Income categories (for CARI)
-    inc_regular = ['Salary_Wage_work', 'Farming', 'Own_business_trade', 'Fishing_aquaculture', 'Petty_trade_small_business']
-    inc_informal = ['Government_asst_safety_nets', 'Daily_casual_labor', 'Remittances', 'Support_from_family_friends', 'Other']
-    inc_none = ['Unemployed', 'Assistance_from_UN_NGO_charity', 'savings', 'Reliance']
+    df['CARI_inc_regular'] = np.where((df['HHIncFirst'] == 'Salary_Wage_work') | (df['HHIncFirst'] == 'Farming') |\
+        (df['HHIncFirst'] == 'Own_business_trade') | (df['HHIncFirst'] == 'Fishing_aquaculture') |\
+                (df['HHIncFirst'] == 'Petty_trade_small_business') | (df['HHIncFirst'] == 'Livestock_production'), 'Yes', 'No')
 
-    df['CARI_inc_regular'] = np.where(df['HHIncFirst'].isin(inc_regular), 'Yes', 'No')
-    df['CARI_inc_informal'] = np.where(df['HHIncFirst'].isin(inc_informal), 'Yes', 'No')
-    df['CARI_inc_none'] = np.where(df['HHIncFirst'].isin(inc_none), 'Yes', 'No')
+    df['CARI_inc_informal'] = np.where((df['HHIncFirst'] == 'Government_asst_safety_nets') | (df['HHIncFirst'] == 'Daily_casual_labor') |\
+        (df['HHIncFirst'] == 'Remittances') | (df['HHIncFirst'] == 'Support_from_family_friends') | (df['HHIncFirst'] == 'Other'), 'Yes', 'No')
 
+    df['CARI_inc_none'] = np.where((df['HHIncFirst'] == 'Unemployed') | (df['HHIncFirst'] == 'Assistance_from_UN_NGO_charity') |\
+        (df['HHIncFirst'] == 'savings') | (df['HHIncFirst'] == 'Reliance'), 'Yes', 'No')
 
     conditions = [
         (df['CARI_inc_regular'] == 'Yes'),
@@ -48,10 +47,8 @@ def samoa_r1_analyze_data(df, svy_id):
     ]
     choices = ['Regular', 'Informal', 'None']
     df['CARI_inc_cat'] = np.select(conditions, choices)
-    df['CARI_inc_cat'] = df['CARI_inc_cat'].replace({'0':np.nan})
 
     ### Create Outcome Variables
-    
     ## -- Food Consumption Score
     # Recode FCS columns == NaN to 0
     fcs_cols = list(df.loc[:,'FCSStap':'FCSCond'])
@@ -70,7 +67,7 @@ def samoa_r1_analyze_data(df, svy_id):
     choices = ['Poor', 'Borderline', 'Acceptable']
     df['FCG'] = np.select(conditions, choices)
 
-    df.loc[df['FCG'] == '0', 'FCG'] = np.nan  
+    df.loc[df['FCG'] == 0, 'FCG'] = np.nan
 
     ## -- Food Consumption Score - Nutrition Quality Analysis (FCS-N)
     vitA_cols = ['FCSDairy', 'FCSMeatO', 'FCSPrEggs', 'FCSVegOrg', 'FCSVegGre', 'FCSFruitOrg']
@@ -135,7 +132,8 @@ def samoa_r1_analyze_data(df, svy_id):
     choices = ['None', 'Stress', 'Crisis', 'Emergency']
     df['LhCSI_cat'] = np.select(conditions, choices)
 
-    ## -- rCARI
+    ## -- remote CARI
+    # - Food consumption
     # Value for severe food coping. Do not have rCSI, so will use HHhsBedHung_YN
     conditions = [
         ((df['FCG'] == 'Acceptable') & (df['HHhsBedHung_YN'] == 'No')),
@@ -190,9 +188,6 @@ def samoa_r1_analyze_data(df, svy_id):
     ## -- Multi-dimensional Deprivation Index (MDDI)
     # Create variable inputs
     # FOOD_1
-    # Drop if FCS_Score == NaN
-    df.dropna(subset=['FCS_Score'], inplace=True)
-
     df['MDDI_Food_1_Dep'] = df['FCG'].replace({'Acceptable': 0, 'Borderline': 1, 'Poor': 1}).astype(int)
 
     # FOOD_3
@@ -222,7 +217,7 @@ def samoa_r1_analyze_data(df, svy_id):
     df['MDDI_Shelter_2_Dep'].fillna(0, inplace=True)
 
     # WASH
-    df['MDDI_WASH_Dep'] = df['HWaterConstrYN'].replace({'Yes': 1, 'No': 0, 'DK':0})
+    df['MDDI_WASH_Dep'] = df['HWaterConstrYN'].replace({'Yes': 1, 'No': 0, 'dontknow':0})
 
     # ENVIRON_2
     df.loc[(df['HHBorrow'] == 'Yes') & ((df['HHBorrowWhy'] == 'food') | (df['HHBorrowWhy'] == 'health')), 'MDDI_Environ_2_Dep'] = 1
@@ -233,6 +228,9 @@ def samoa_r1_analyze_data(df, svy_id):
     df['MDDI_Dep'] = (1/6*1/2*100)*df['MDDI_Food_1_Dep'] + (1/6*1/2*100)*df['MDDI_Food_3_Dep'] +\
     (1/6*100)*df['MDDI_Edu_1_Dep'] + (1/6*100)*df['MDDI_Health_1_Dep'] + (1/6*1/2*100)*df['MDDI_Shelter_1_Dep'] +\
     (1/6*1/2*100)*df['MDDI_Shelter_2_Dep'] + (1/6*100)*df['MDDI_WASH_Dep'] + (1/6*100)*df['MDDI_Environ_2_Dep']
+
+    df['MDDI_Food_Dep'] = (1/6*1/2*100)*df['MDDI_Food_1_Dep'] + (1/6*1/2*100)*df['MDDI_Food_3_Dep']
+    df['MDDI_Shelter_Dep'] = (1/6*1/2*100)*df['MDDI_Shelter_1_Dep'] + (1/6*1/2*100)*df['MDDI_Shelter_2_Dep']
 
     df.loc[(df['MDDI_Dep'] >= 30), 'MDDI_Dep_Cat'] = 'Yes'
     df['MDDI_Dep_Cat'].fillna('No', inplace=True)

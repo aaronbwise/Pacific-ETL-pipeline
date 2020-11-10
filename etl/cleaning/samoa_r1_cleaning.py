@@ -31,17 +31,6 @@ def samoa_r1_clean_data(df, svy_id):
     # Drop incomplete surveys
     df = df[df['completed_svy'] == 1]
 
-    # Convert dates/times to datetime format
-    df['start'] = pd.to_datetime(df.start)
-    df['end'] = pd.to_datetime(df.end)
-
-    # Remove surveys outside R1
-    # Create R1 timestamps
-    ts_start = pd.to_datetime('08/14/2020', utc=True)
-    ts_end = pd.to_datetime('09/19/2020', utc=True)
-
-    df = df[(df['start'] >= ts_start) & (df['start'] <= ts_end)]
-
     # Convert number variables to numeric format
     cols = ['RESPAge', 'HHSize', 'HHSizeM', 'HHSizeF', 'HHSizeOth', 'HHSize04F', 'HHBreastfedF',\
         'HHSize0514F', 'HHSize1524F', 'HHSize2554F', 'HHSize5564F', 'HHSize65aboveF', 'HHSize04M',\
@@ -70,7 +59,7 @@ def samoa_r1_clean_data(df, svy_id):
     # Write out file
     fn = svy_id + '_cleaned' + '.csv'
     out_path = datadir.joinpath(fn)
-    print(f'Clean file being saved to: {out_path}')
+    print(f'\n Clean file being saved to: \n {out_path} \n')
     try:
         df.to_csv(out_path, index=False)
         print(f'{svy_id} data cleaned and SAVED!')
