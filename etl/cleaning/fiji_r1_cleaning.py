@@ -49,6 +49,10 @@ def fiji_r1_clean_data(df, svy_id):
             'FCSFat', 'FCSSugar', 'FCSCond', 'HHChronIllNb', 'Hroom', 'HHDebtPaidWhen']
     df[cols] = df[cols].astype('float64')
 
+    # Rename R1 columns to match R2+ name
+    df = df.rename(columns = {'HHHEduYears': 'HHHEdu'})
+    df = df.rename(columns = {'HWaterConstr': 'HWaterConstrYN'})
+    
     # Clean categorical variables -> values and labels
     yes_no_dict = {'yes': 'Yes', 'no': 'No'}
 

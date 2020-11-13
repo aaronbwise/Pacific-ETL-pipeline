@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
-import etl.loading.fiji_engine as fe
-import etl.loading.samoa_engine as se
+import etl.engines.fiji_engine as fe
+import etl.engines.samoa_engine as se
 
 class StatEngine:
 

@@ -37,6 +37,25 @@ def fiji_r1_analyze_data(df, svy_id):
     df.loc[(df['HHDisabledNb'] > 0), 'HH_Disabled'] = 'Yes'
     df['HH_Disabled'].fillna('No', inplace=True)
 
+    ## -- Income categories (for CARI)
+    inc_regular = ['Salary_Wage_work', 'Farming', 'Own_business_trade', 'Fishing_aquaculture', 'Petty_trade_small_business', 'Livestock_production']
+    inc_informal = ['Government_asst_safety_nets', 'Daily_casual_labor', 'Remittances', 'Support_from_family_friends', 'Other']
+    inc_none = ['Unemployed', 'Assistance_from_UN_NGO_charity', 'savings', 'Reliance']
+
+    df['CARI_inc_regular'] = np.where(df['HHIncFirst'].isin(inc_regular), 'Yes', 'No')
+    df['CARI_inc_informal'] = np.where(df['HHIncFirst'].isin(inc_informal), 'Yes', 'No')
+    df['CARI_inc_none'] = np.where(df['HHIncFirst'].isin(inc_none), 'Yes', 'No')
+
+
+    conditions = [
+        (df['CARI_inc_regular'] == 'Yes'),
+        (df['CARI_inc_informal'] == 'Yes'),
+        (df['CARI_inc_none'] == 'Yes')
+    ]
+    choices = ['Regular', 'Informal', 'None']
+    df['CARI_inc_cat'] = np.select(conditions, choices)
+    df['CARI_inc_cat'] = df['CARI_inc_cat'].replace({'0':np.nan})
+
     ### Create Outcome Variables
     ## -- Food Consumption Score
     # Discrepancy between, e.g., FCSPr and FCSPrFish, whereby latter is greater than former.

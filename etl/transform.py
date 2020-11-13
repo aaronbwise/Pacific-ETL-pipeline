@@ -3,12 +3,18 @@ import json
 from pathlib import Path
 from etl.clean_inputs import CleaningInputs
 
+# Fiji
 import etl.cleaning.fiji_r1_cleaning as f1cl
 import etl.analysis.fiji_r1_analysis as f1an
 
+import etl.cleaning.fiji_r2_cleaning as f2cl
+import etl.analysis.fiji_r2_analysis as f2an
+
+# Tonga
 import etl.cleaning.tonga_r1_cleaning as t1cl
 import etl.analysis.tonga_r1_analysis as t1an
 
+# Samoa
 import etl.cleaning.samoa_r1_cleaning as s1cl
 import etl.analysis.samoa_r1_analysis as s1an
 
@@ -44,6 +50,8 @@ class TransformData:
             analysed_df = t1an.tonga_r1_analyze_data(clean_df, svy_id)
         elif svy_id == '600087':
             analysed_df = s1an.samoa_r1_analyze_data(clean_df, svy_id)
+        elif svy_id == '587333':
+            analysed_df = f2an.fiji_r2_analyze_data(clean_df, svy_id)
         else:
             analysed_df = None
         return analysed_df
@@ -57,6 +65,8 @@ class TransformData:
             clean_df = t1cl.tonga_r1_clean_data(t1cl.tonga_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         elif svy_id == '600087': # Samoa_R1
             clean_df = s1cl.samoa_r1_clean_data(s1cl.samoa_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
+        elif svy_id == '587333': # Fiji_R2
+            clean_df = f2cl.fiji_r2_clean_data(f2cl.fiji_r2_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         else:
             clean_df = None
         return clean_df

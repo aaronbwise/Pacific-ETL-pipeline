@@ -1,5 +1,5 @@
 import pandas as pd
-from etl.loading.aw_analytics import output_mean_tableau
+from etl.engines.aw_analytics import output_mean_tableau
 
 def samoa_r1_engine(df):
     wt = ['weight_scl']

@@ -9,7 +9,7 @@ class LoadData:
 
     # Get config info
     config_path = Path.cwd().joinpath('config.json')
-    db_config_data = json.load(open(config_path))
+    config_data = json.load(open(config_path))
 
     def __init__(self, round_dict, ENV):
         self.round_dict = round_dict
@@ -29,13 +29,13 @@ class LoadData:
 
         if self.ENV == 'DEV':
             # Development database config
-            self.dev_config = self.db_config_data['dev_postgres']
+            self.dev_config = self.config_data['dev_postgres']
             self.conn_str = self.dev_config['username'] + ':' + self.dev_config['password'] + '@'\
                 + 'localhost' + '/' + self.dev_config['db_name']
             self.conn_uri = f"postgresql://{self.conn_str}"
         else:
             # Deployment database config
-            self.dep_config = self.db_config_data['dep_postgres']
+            self.dep_config = self.config_data['dep_postgres']
             self.conn_str = self.dep_config['username'] + ':' + self.dep_config['password'] + '@'\
                 + self.dep_config['ip'] + ':' + self.dep_config['port'] + '/' +\
                     self.dep_config['db_name']
