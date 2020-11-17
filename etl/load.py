@@ -21,11 +21,11 @@ class LoadData:
         print(len(self.tableau_output_dict))
 
     def load_data(self):
-        for svy_id, output in self.tableau_output_dict.items():
-            self.load_engine(svy_id, output)
+        for country_name, output in self.tableau_output_dict.items():
+            self.load_engine(country_name, output)
         return
     
-    def load_engine(self, svy_id, output):
+    def load_engine(self, country_name, output):
 
         if self.ENV == 'DEV':
             # Development database config
@@ -45,18 +45,18 @@ class LoadData:
         self.engine = db.create_engine(self.conn_uri)
 
         if output is not None:
-            if svy_id == '556482' or svy_id == '587333':
+            if country_name == 'Fiji':
                 output.to_sql('fiji', self.engine, index=False, if_exists='replace')
-                print(f'Data for {svy_id} was loaded to db successfully!')
+                print(f'Data for {country_name} was loaded to db successfully!')
 
-            elif svy_id == '600069' or svy_id == '600072':
+            elif country_name == 'Tonga':
                 output.to_sql('tonga', self.engine, index=False, if_exists='replace')
-                print(f'Data for {svy_id} was loaded to db successfully!')
+                print(f'Data for {country_name} was loaded to db successfully!')
 
-            elif svy_id == '600087' or svy_id == '600088':
+            elif country_name == 'Samoa':
                 output.to_sql('samoa', self.engine, index=False, if_exists='replace')
-                print(f'Data for {svy_id} was loaded to db successfully!')
+                print(f'Data for {country_name} was loaded to db successfully!')
             else:
                 print(f'Uh oh! Something went wrong - check tableau_output_dict')
         else:
-            print(f'There is no tableau data for {svy_id}')
+            print(f'There is no tableau data for {country_name}')

@@ -6,8 +6,8 @@ import pandas as pd
 # Set directory for cleaned data
 datadir = Path.cwd().joinpath('etl', 'data')
 
-def fiji_r2_preprocess_data(df, col_mapping_dict, col_order_list):
-    """Function to preprocess Fiji_R2 data"""
+def samoa_r2_preprocess_data(df, col_mapping_dict, col_order_list):
+    """Function to preprocess Samoa R2+ data"""
     df = df.rename(columns = col_mapping_dict)
 
     # Update column order
@@ -18,29 +18,24 @@ def fiji_r2_preprocess_data(df, col_mapping_dict, col_order_list):
 
     df = df[final_order]
 
-    # # Apply function to create separate columns for each response
-    df['HHDisabledType_1'] = df.HHDisabledType.str.split(' ').str[0]
-    df['HHDisabledType_2'] = df.HHDisabledType.str.split(' ').str[1]
-
-    # # Insert Round
-    # df.insert(0, 'Round', 'R2')
-
     return df
 
-def fiji_r2_clean_data(df, svy_id):
-    
+def samoa_r2_clean_data(df, svy_id):
+
     # Add column for completed_survey
     df['RESPAge'] = df['RESPAge'].astype('float64')
+    # Recode RESPAge == 99 as NaN
+    df.loc[:,'RESPAge'] = df['RESPAge'].replace({99: np.nan})
     df['completed_svy'] = np.where((df['RESPConsent'] == 'Yes') & (df['RESPAge'] >= 18), 1, 0)
 
     # Drop incomplete surveys
     df = df[df['completed_svy'] == 1]
 
     # Convert number variables to numeric format
+    # Convert number variables to numeric format
     cols = ['RESPAge', 'HHSize', 'HHSizeM', 'HHSizeF', 'HHSizeOth', 'HHSize04F', 'HHBreastfedF',\
             'HHSize0514F', 'HHSize1524F', 'HHSize2554F', 'HHSize5564F', 'HHSize65aboveF', 'HHSize04M',\
             'HHBreastfedM', 'HHSize0514M', 'HHSize1524M', 'HHSize2554M', 'HHSize5564M', 'HHSize65aboveM',\
-            'HHSize0514Oth', 'HHSize1524Oth', 'HHSize2554Oth', 'HHSize5564Oth', 'HHSize65aboveOth',\
             'HHDisabledNb', 'FCSStap', 'FCSPulse', 'FCSDairy', 'FCSPr', 'FCSPrMeat', 'FCSMeatO', 'FCSPrFish',\
             'FCSPrEggs', 'FCSVeg', 'FCSVegOrg', 'FCSVegGre', 'FCSFruit', 'FCSFruitOrg', 'FCSFat', 'FCSSugar',\
             'FCSCond', 'HHIllNb', 'Hroom', 'HHDebtPaidWhen']
@@ -51,12 +46,16 @@ def fiji_r2_clean_data(df, svy_id):
     # Impute HHHSex from RESPSex if RESP == HHH
     df['HHHSex'] = np.where(df['RESPRelationHHH'] == 'Yes', df['RESPSex'], df['HHHSex'])
 
-    df.loc[:, 'HHygieneYN'] = df['HHygieneYN'].replace({'no': 'No', 'yes': 'Yes'})
-    df.loc[:, 'HWaterConstrYN'] = df['HWaterConstrYN'].replace({'no': 'No', 'yes': 'Yes'})
+    # HHInc
+    df['HHIncChg'] = df['HHIncChg'].replace({np.nan:'no_income'})
 
+    # Rooms = 0 to NaN
     df.loc[df['Hroom'] == 0, 'Hroom'] = np.nan
 
-
+    # yesnodontknow
+    yndk_cols = ['HHygieneYN', 'HWaterConstrYN']
+    df.loc[:,yndk_cols] = df.replace({'no': 'No', 'yes': 'Yes', 'dontknow':'DK'})
+    
     # Write out file
     fn = svy_id + '_cleaned' + '.csv'
     out_path = datadir.joinpath(fn)

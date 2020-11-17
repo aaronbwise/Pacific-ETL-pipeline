@@ -10,14 +10,14 @@ def fiji_r1_analyze_data(df, svy_id):
 
     ### Create Grouping Variables
     ## -- Divison Groups
-    df.loc[(df['ADM2Name'] == 'Naitasiri') | (df['ADM2Name'] == 'Namosi') | (df['ADM2Name'] == 'Rewa') |\
-        (df['ADM2Name'] == 'Serua') | (df['ADM2Name'] == 'Tailevu') | (df['ADM2Name'] == 'Kadavu') |\
-                    (df['ADM2Name'] == 'Lau') | (df['ADM2Name'] == 'Lomaiviti') | (df['ADM2Name'] == 'Rotuma'), 'Division'] = 'Central/Eastern'
+    df.loc[(df['ADM1INName'] == 'Naitasiri') | (df['ADM1INName'] == 'Namosi') | (df['ADM1INName'] == 'Rewa') |\
+        (df['ADM1INName'] == 'Serua') | (df['ADM1INName'] == 'Tailevu') | (df['ADM1INName'] == 'Kadavu') |\
+                    (df['ADM1INName'] == 'Lau') | (df['ADM1INName'] == 'Lomaiviti') | (df['ADM1INName'] == 'Rotuma'), 'Division'] = 'Central/Eastern'
 
-    df.loc[(df['ADM2Name'] == 'Bua') | (df['ADM2Name'] == 'Cakaudrove') |\
-        (df['ADM2Name'] == 'Macuata'), 'Division'] = 'Northern'
+    df.loc[(df['ADM1INName'] == 'Bua') | (df['ADM1INName'] == 'Cakaudrove') |\
+        (df['ADM1INName'] == 'Macuata'), 'Division'] = 'Northern'
 
-    df.loc[(df['ADM2Name'] == 'Ba') | (df['ADM2Name'] == 'Nadroga-Navosa') | (df['ADM2Name'] == 'Ra'), 'Division'] = 'Western'
+    df.loc[(df['ADM1INName'] == 'Ba') | (df['ADM1INName'] == 'Nadroga-Navosa') | (df['ADM1INName'] == 'Ra'), 'Division'] = 'Western'
 
     ## -- Depenency Ratio Category
     dep_cols = ['HHSize04F', 'HHSize0414F', 'HHSize65aboveF', 'HHSize04M', 'HHSize0414M', 'HHSize65aboveM']
@@ -174,25 +174,16 @@ def fiji_r1_analyze_data(df, svy_id):
     # FOOD_1
     df['MDDI_Food_1_Dep'] = df['FCG'].replace({'Acceptable': 0, 'Borderline': 1, 'Poor': 1}).astype(int)
 
-    # FOOD_2
-    df.loc[(df['Food_SRf1'] == 'Gift from family_friends') |\
-        (df['Food_SRf1'] == 'Food assistance_Govt'), 'MDDI_Food_2_Dep'] = 1
-    df['MDDI_Food_2_Dep'].fillna(0, inplace=True)
 
     # FOOD_3
-    df.loc[(df['HHhsBedHung_YN'] == 'Yes'), 'MDDI_Food_3_Dep'] = 1
-    df['MDDI_Food_3_Dep'].fillna(0, inplace=True)
+    df['MDDI_Food_3_Dep'] = np.where(df['HHhsBedHung_YN'] == 'Yes', 1, 0)
 
     # EDU_1
     df.loc[(df['HHSchoolSituation'] == 'Learning remotely_parent resources'), 'MDDI_Edu_1_Dep'] = 1
     df['MDDI_Edu_1_Dep'].fillna(0, inplace=True)
 
-    # EDU_2
-    df.loc[(df['HHHEduYears'] == 'Primary'), 'MDDI_Edu_2_Dep'] = 1
-    df['MDDI_Edu_2_Dep'].fillna(0, inplace=True)
-
     # HEALTH_1
-    df.loc[(df['HHChronIll'] == 'Yes') | (df['HH_Disabled'] == 'Yes'), 'MDDI_Health_1_Dep'] = 1
+    df.loc[(df['HHIll'] == 'Yes') | (df['HH_Disabled'] == 'Yes'), 'MDDI_Health_1_Dep'] = 1
     df['MDDI_Health_1_Dep'].fillna(0, inplace=True)
 
     # SHELTER_1
@@ -210,7 +201,7 @@ def fiji_r1_analyze_data(df, svy_id):
     df['MDDI_Shelter_2_Dep'].fillna(0, inplace=True)
 
     # WASH
-    df['MDDI_WASH_Dep'] = df['HWaterConstr'].replace({'Yes': 1, 'No': 0})
+    df['MDDI_WASH_Dep'] = df['HWaterConstrYN'].replace({'Yes': 1, 'No': 0})
 
     # ENVIRON_2
     df.loc[(df['HHBorrow'] == 'Yes') & ((df['HHBorrowWhy'] == 'Food') | (df['HHBorrowWhy'] == 'Healthcare')), 'MDDI_Environ_2_Dep'] = 1

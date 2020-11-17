@@ -1,7 +1,8 @@
 import pandas as pd
 from pathlib import Path
-import etl.engines.fiji_engine as fe
-import etl.engines.samoa_engine as se
+from etl.engines.fiji_engine import FijiEngine
+# from etl.engines.samoa_engine import SamoaEngine
+
 
 class StatEngine:
 
@@ -11,37 +12,30 @@ class StatEngine:
     def __init__(self, round_dict):
         self.round_dict = round_dict
 
+        self.country_name_id_list_dict = {
+            'Fiji': [self.round_dict[k] for k in self.round_dict.keys() if 'Fiji' in k],
+            'Samoa': [self.round_dict[k] for k in self.round_dict.keys() if 'Samoa' in k],
+            'Tonga': [self.round_dict[k] for k in self.round_dict.keys() if 'Tonga' in k]
+        }
+
     def stat_engine(self):
         tableau_output_dict = self.generate_tableau_dict()
         return tableau_output_dict
         
     def generate_tableau_dict(self):
         tableau_output_dict = {}
-        for svy_id in self.round_dict.values():
-            tableau_output_dict[svy_id] = self.generate_output_tableau(svy_id)
+        for country_name in self.country_name_id_list_dict.keys():
+            tableau_output_dict[country_name] = self.generate_output_tableau(country_name)
         return tableau_output_dict
 
-    def generate_output_tableau(self, svy_id):
-        """
-        Generate dictionary with svy_id and output for Tableau (ie long form)
-        """
-        df = self.generate_df(svy_id)
-
-        if svy_id == '556482':
-            output = fe.fiji_r1_engine(df)
-        elif svy_id == '600087':
-            output = se.samoa_r1_engine(df)
+    def generate_output_tableau(self, country_name):
+        if country_name == 'Fiji':
+            obj = FijiEngine(self.country_name_id_list_dict[country_name])
+            output_tableau = obj.run_fiji_engine()
+            return output_tableau
+        # elif country_name == 'Samoa':
+        #     obj = SamoaEngine(self.country_name_id_list_dict[country_name])
+        #     output_tableau = obj.run_samoa_engine()
+        #     return output_tableau
         else:
-            output = None
-        
-        return output
-
-    def generate_df(self, svy_id):
-        fn = svy_id + '_analysed' + '.csv'
-        path = self.datadir.joinpath(fn)
-
-        if path.is_file():
-            df = pd.read_csv(path)
-        else:
-            df = None
-        return df
+            return None

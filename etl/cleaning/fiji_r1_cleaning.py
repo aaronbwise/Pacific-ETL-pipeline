@@ -50,8 +50,7 @@ def fiji_r1_clean_data(df, svy_id):
     df[cols] = df[cols].astype('float64')
 
     # Rename R1 columns to match R2+ name
-    df = df.rename(columns = {'HHHEduYears': 'HHHEdu'})
-    df = df.rename(columns = {'HWaterConstr': 'HWaterConstrYN'})
+    df = df.rename(columns = {'ADM2Name':'ADM1INName', 'HHHEduYears': 'HHHEdu', 'HWaterConstr': 'HWaterConstrYN', 'HHChronIll': 'HHIll'})
     
     # Clean categorical variables -> values and labels
     yes_no_dict = {'yes': 'Yes', 'no': 'No'}
@@ -60,7 +59,7 @@ def fiji_r1_clean_data(df, svy_id):
     df.loc[:,'RESPDob'] = df.replace(yes_no_dict)
     df.loc[:,'PrefLang'] = df.replace({'english': 'English', 'fijian': 'Fijian', 'hindi':'Hindi'})
     df.loc[:,'Rural'] = df.replace({'rural': 'Rural', 'urban': 'Urban'})
-    df.loc[:,'ADM2Name'] = df.replace({'ba': 'Ba', 'naitasiri': 'Naitasiri', 'rewa': 'Rewa',\
+    df.loc[:,'ADM1INName'] = df.replace({'ba': 'Ba', 'naitasiri': 'Naitasiri', 'rewa': 'Rewa',\
                                             'macuata': 'Macuata', 'tailevu': 'Tailevu', 'nadroga_navosa': 'Nadroga-Navosa',\
                                             'cakaudrove': 'Cakaudrove', 'ra': 'Ra', 'serua': 'Serua', 'namosi': 'Namosi',\
                                             'bua': 'Bua', 'lomaiviti': 'Lomaiviti', 'lau': 'Lau', 'kadavu': 'Kadavu',\
@@ -72,7 +71,7 @@ def fiji_r1_clean_data(df, svy_id):
     df.loc[:,'HHHSex'] = np.where(df['RESPRelationHHH'] == 'Yes', df['RESPSex'], df['HHHSex'])
     df.loc[:,'HHHSex'] = df.replace({'male': 'Male', 'female': 'Female', 'other': 'Other'})
 
-    df.loc[:,'HHHEduYears'] = df.replace({'male': 'No Education', 'female': 'Primary', 'secondary': 'Secondary',\
+    df.loc[:,'HHHEdu'] = df.replace({'male': 'No Education', 'female': 'Primary', 'secondary': 'Secondary',\
                                                 'tertiary': 'Tertiary', 'vocational_tra': 'Vocational Training'})
     df.loc[:,'HHDispl'] = df.replace({'yes': 'Yes_into household', 'no': 'Yes_out of household',\
                                         'none___househo': 'No'})
@@ -126,7 +125,7 @@ def fiji_r1_clean_data(df, svy_id):
     df.loc[:,'HHSchoolSituation'] = df.replace({'no_children': 'No children 5-17 in household', 'children_going': 'Physically attending',\
                                                             'children_paren': 'Learning remotely_parent resources', 'don_t_know': 'Learning remotely_school resources',\
                                                             'children_are_n': 'No learning activities during the day', 'other': 'Other'})
-    df.loc[:,'HHChronIll'] = df.replace(yes_no_dict)
+    df.loc[:,'HHIll'] = df.replace(yes_no_dict)
     df.loc[:,'HHENHealthMed'] = df.replace({'yes': 'Yes', 'no': 'No', 'medicre_not_ne': 'Medical care not needed'})
     df.loc[:,'HHENHealthMedPrb'] = df.replace({'hlth_is_far': 'Hospital\health center is far',\
                                                             'hlth_is_clsd': 'Hospitals\Health centers closed',\
@@ -154,7 +153,7 @@ def fiji_r1_clean_data(df, svy_id):
                                                 'no_money': 'No money to buy food', 'no_food_house': 'No food in house',\
                                                 'no_access': 'Cannot access the market_grocery', 'markets_groc': 'Markets_grocery closed',\
                                                 'no_access_gard': 'No access to food gardens', 'other': 'Other'})
-    df.loc[:,'HWaterConstr'] = df.replace({'yes': 'Yes', 'no': 'No', 'dont_know': 'Don\'t know'})
+    df.loc[:,'HWaterConstrYN'] = df.replace({'yes': 'Yes', 'no': 'No', 'dont_know': 'Don\'t know'})
     df.loc[:,'HDwellCond'] = df.replace({'own_house': 'Own', 'rent': 'Rent', 'free': 'Do not own but live for free',\
                                                 'other': 'Other'})
 
@@ -188,7 +187,8 @@ def fiji_r1_clean_data(df, svy_id):
     
     # Remove Hroom == 0
     df.loc[:, 'Hroom'] = df.replace({0:np.nan})
-    
+
+   
     # Write out file
     fn = svy_id + '_cleaned' + '.csv'
     out_path = datadir.joinpath(fn)

@@ -24,10 +24,10 @@ if __name__ == "__main__":
     # extractObj = ExtractData(url, user, password, round_dict)
     # extractObj.extract()
     
-    # Transform Data
-    transformObj = TransformData(round_dict)
-    transformObj.transform()
-
+#    # Transform Data
+#     transformObj = TransformData(round_dict)
+#     transformObj.transform()
+ 
     # # Load data
     # loadObj = LoadData(round_dict, ENV)
     # loadObj.load_data()
