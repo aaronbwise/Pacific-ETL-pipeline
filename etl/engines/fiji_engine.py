@@ -2,7 +2,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import json
-# from aw_analytics import OutputLongFormat
 from etl.engines.aw_analytics import OutputLongFormat
 
 class FijiEngine:
@@ -19,8 +18,6 @@ class FijiEngine:
     # Get config info
     config_path = Path.cwd().joinpath('config.json')  # --> Production
     config_data = json.load(open(config_path))
-    # config_path = 'C:\\Users\\Aaron\\Google Drive\\01_PERSONAL\\Programming\\Python\\etl_pipeline\\config.json'
-    # config_data = json.load(open(config_path))
 
 
     def __init__(self, list_of_svy_ids):
@@ -44,7 +41,6 @@ class FijiEngine:
         combined_df.loc[:, 'HDwellCond'] = combined_df.replace({'own_house': 'Own', 'rent': 'Rent', 'free': 'Do not own but live for free',\
             'other': 'Other'})
 
-        # print(f'Value Counts: \n {combined_df.HHIll.value_counts(dropna=False)}')
 
         wt = ['weight_scl']
 

@@ -157,17 +157,17 @@ def fiji_r1_analyze_data(df, svy_id):
     df['LCS_Other_Y'] = df.LhCSIMoreIncome.str.contains('other_activiti')
 
     ## -- Most important concerns
-    df['Worry_DisruptLiv_Y'] = df.RESPWorryRsns.str.contains('disruption_to_')
-    df['Worry_FoodShort_Y'] = df.RESPWorryRsns.str.contains('shortage_of_fo')
-    df['Worry_FoodPrices_Y'] = df.RESPWorryRsns.str.contains('increase_in_fo')
-    df['Worry_MedShort_Y'] = df.RESPWorryRsns.str.contains('shortage_of_me')
-    df['Worry_DisruptMed_Y'] = df.RESPWorryRsns.str.contains('disruption_of_')
-    df['Worry_DisruptEdu_Y'] = df.RESPWorryRsns.str.contains('disruption_of__1')
-    df['Worry_Illness_Y'] = df.RESPWorryRsns.str.contains('getting_sick')
-    df['Worry_NoWork_Y'] = df.RESPWorryRsns.str.contains('lack_of_work')
-    df['Worry_TravelRestr_Y'] = df.RESPWorryRsns.str.contains('travel_restric')
-    df['Worry_None_Y'] = df.RESPWorryRsns.str.contains('no_concerns')
-    df['Worry_Other_Y'] = df.RESPWorryRsns.str.contains('other')
+    df['Worry_DisruptLiv_Y'] = np.where(df.RESPWorryRsns.str.contains('disruption_to_'), 1, 0)
+    df['Worry_FoodShort_Y'] = np.where(df.RESPWorryRsns.str.contains('shortage_of_fo'), 1, 0)
+    df['Worry_FoodPrices_Y'] = np.where(df.RESPWorryRsns.str.contains('increase_in_fo'), 1, 0)
+    df['Worry_MedShort_Y'] = np.where(df.RESPWorryRsns.str.contains('shortage_of_me'), 1, 0)
+    df['Worry_DisruptMed_Y'] = np.where(df.RESPWorryRsns.str.contains('disruption_of_'), 1, 0)
+    df['Worry_DisruptEdu_Y'] = np.where(df.RESPWorryRsns.str.contains('disruption_of__1'), 1, 0)
+    df['Worry_Illness_Y'] = np.where(df.RESPWorryRsns.str.contains('getting_sick'), 1, 0)
+    df['Worry_NoWork_Y'] = np.where(df.RESPWorryRsns.str.contains('lack_of_work'), 1, 0)
+    df['Worry_TravelRestr_Y'] = np.where(df.RESPWorryRsns.str.contains('travel_restric'), 1, 0)
+    df['Worry_None_Y'] = np.where(df.RESPWorryRsns.str.contains('no_concerns'), 1, 0)
+    df['Worry_Other_Y'] = np.where(df.RESPWorryRsns.str.contains('other'), 1, 0)
 
     ## -- Multi-dimensional Deprivation Index (MDDI)
     # Create variable inputs

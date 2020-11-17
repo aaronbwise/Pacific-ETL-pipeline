@@ -41,17 +41,17 @@ class SamoaEngine:
         # combined_df.loc[:, 'HDwellCond'] = combined_df.replace({'own_house': 'Own', 'rent': 'Rent', 'free': 'Do not own but live for free',\
         #     'other': 'Other'})
 
-        # print(f'Value Counts: \n {combined_df.HHIll.value_counts(dropna=False)}')
-
+        print(f'Value Counts: \n {combined_df.Round.value_counts(dropna=False)}')
+        
         wt = ['weight_scl']
 
-        ind_vars = ['Total', 'Division','PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\
+        ind_vars = ['Total', 'ADM1INName', 'PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\
                     'HDwellCond', 'CARI_inc_cat', 'HH_Inc_Reduced', 'HHFarm', 'HHIll', 'Food_SRf1', 'HHRemitt_YN', 'HHBorrow']
 
-        cat_vars = ['FCG', 'FG_VitA_Cat', 'FG_Protein_Cat', 'FG_HIron_Cat', 'dep_ratio_cat',\
+        cat_vars = ['FoodInsecure', 'FCG', 'FG_VitA_Cat', 'FG_Protein_Cat', 'FG_HIron_Cat', 'dep_ratio_cat',\
                     'LhCSI_cat', 'Worry_DisruptLiv_Y', 'Worry_FoodShort_Y', 'Worry_FoodPrices_Y', 'Worry_MedShort_Y',\
                 'Worry_DisruptMed_Y', 'Worry_DisruptEdu_Y', 'Worry_Illness_Y', 'Worry_NoWork_Y', 'Worry_TravelRestr_Y',\
-                    'Worry_None_Y', 'Worry_Other_Y', 'rCARI_cat', 'MDDI_Dep_Cat', 'HH_Inc_Reduced', 'WitGenViolence', 'HHSchoolSituation',\
+                    'Worry_None_Y', 'Worry_Other_Y',  'rCARI_cat', 'MDDI_Dep_Cat', 'HH_Inc_Reduced', 'WitGenViolence', 'HHSchoolSituation',\
                     'HHIll', 'Food_SRf1', 'HHhsBedHung_YN', 'HWaterConstrYN', 'HHRemitt_YN', 'HHBorrow']
 
         num_vars = ['FCSStap', 'FCSPulse', 'FCSDairy', 'FCSPr', 'FCSVeg', 'FCSFruit', 'FCSFat', 'FCSSugar', 'FCS_Score', 'FCS_Score', 'rCARI', 'MDDI_Dep_Sum']

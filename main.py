@@ -28,6 +28,6 @@ if __name__ == "__main__":
 #     transformObj = TransformData(round_dict)
 #     transformObj.transform()
  
-    # # Load data
-    # loadObj = LoadData(round_dict, ENV)
-    # loadObj.load_data()
+    # Load data
+    loadObj = LoadData(round_dict, ENV)
+    loadObj.load_data()

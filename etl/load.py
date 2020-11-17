@@ -18,7 +18,7 @@ class LoadData:
         # Get stat engine information
         statObj = StatEngine(self.round_dict)
         self.tableau_output_dict = statObj.stat_engine()
-        print(len(self.tableau_output_dict))
+        # print(len(self.tableau_output_dict))
 
     def load_data(self):
         for country_name, output in self.tableau_output_dict.items():

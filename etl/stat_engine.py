@@ -1,7 +1,8 @@
 import pandas as pd
 from pathlib import Path
 from etl.engines.fiji_engine import FijiEngine
-# from etl.engines.samoa_engine import SamoaEngine
+from etl.engines.samoa_engine import SamoaEngine
+# from etl.engines.tonga_engine import TongaEngine
 
 
 class StatEngine:
@@ -33,9 +34,13 @@ class StatEngine:
             obj = FijiEngine(self.country_name_id_list_dict[country_name])
             output_tableau = obj.run_fiji_engine()
             return output_tableau
-        # elif country_name == 'Samoa':
-        #     obj = SamoaEngine(self.country_name_id_list_dict[country_name])
-        #     output_tableau = obj.run_samoa_engine()
+        elif country_name == 'Samoa':
+            obj = SamoaEngine(self.country_name_id_list_dict[country_name])
+            output_tableau = obj.run_samoa_engine()
+            return output_tableau
+        # elif country_name == 'Tonga':
+        #     obj = TongaEngine(self.country_name_id_list_dict[country_name])
+        #     output_tableau = obj.run_tonga_engine()
         #     return output_tableau
         else:
             return None
