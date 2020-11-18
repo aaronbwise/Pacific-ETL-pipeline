@@ -31,16 +31,6 @@ class SamoaEngine:
     def generate_output_long(self):
         combined_df = self.clean_combine()
 
-        # # Clean responses between R1 and R2+
-        # combined_df.loc[:, 'HHHEdu'] = combined_df.replace({'No Education': 'None', 'Vocational Training': 'Vocational'})
-        # combined_df.loc[:, 'HHSchoolSituation'] = combined_df.replace({'attending_school': 'Physically attending',\
-        #     'no_children': 'No children 5-17 in household', 'other': 'Other', 'remotely_school': 'Learning remotely_school resources',\
-        #         'remotely_parents': 'Learning remotely_parent resources', 'no_learning': 'No learning activities during the day'})
-        # combined_df.loc[:, 'Food_SRf1'] = combined_df.replace({'market': 'Market_grocery', 'own_production': 'Own production',\
-        #     'other': 'Other', 'gift': 'Gift from family_friends', 'gov': 'Food assistance_Govt', 'religious': 'Religious'})
-        # combined_df.loc[:, 'HDwellCond'] = combined_df.replace({'own_house': 'Own', 'rent': 'Rent', 'free': 'Do not own but live for free',\
-        #     'other': 'Other'})
-
         print(f'Value Counts: \n {combined_df.Round.value_counts(dropna=False)}')
         
         wt = ['weight_scl']

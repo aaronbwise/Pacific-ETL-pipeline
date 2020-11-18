@@ -1,4 +1,3 @@
-# Load data into postgreSQL database
 import sqlalchemy as db
 import json
 from pathlib import Path
@@ -18,7 +17,6 @@ class LoadData:
         # Get stat engine information
         statObj = StatEngine(self.round_dict)
         self.tableau_output_dict = statObj.stat_engine()
-        # print(len(self.tableau_output_dict))
 
     def load_data(self):
         for country_name, output in self.tableau_output_dict.items():
@@ -46,15 +44,15 @@ class LoadData:
 
         if output is not None:
             if country_name == 'Fiji':
-                output.to_sql('fiji', self.engine, index=False, if_exists='replace')
+                output.to_sql('fiji', self.engine, index=False, if_exists='replace', method='multi')
                 print(f'Data for {country_name} was loaded to db successfully!')
 
             elif country_name == 'Tonga':
-                output.to_sql('tonga', self.engine, index=False, if_exists='replace')
+                output.to_sql('tonga', self.engine, index=False, if_exists='replace', method='multi')
                 print(f'Data for {country_name} was loaded to db successfully!')
 
             elif country_name == 'Samoa':
-                output.to_sql('samoa', self.engine, index=False, if_exists='replace')
+                output.to_sql('samoa', self.engine, index=False, if_exists='replace', method='multi')
                 print(f'Data for {country_name} was loaded to db successfully!')
             else:
                 print(f'Uh oh! Something went wrong - check tableau_output_dict')

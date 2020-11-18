@@ -7,13 +7,14 @@ import gc
 
 
 class ExtractData:
+    # Get config info
+    config_path = Path.cwd().joinpath('config.json')
+    config_data = json.load(open(config_path))
+
     # Set data directory
     datadir = Path.cwd().joinpath('etl', 'data')
 
-    def __init__(self, url, user, password, round_dict):
-        self.url = url
-        self.user = user
-        self.password = password
+    def __init__(self, round_dict):
         self.round_dict = round_dict
 
     def extract(self):
@@ -41,7 +42,10 @@ class ExtractData:
         return
 
     def fetch_data(self, svy_id):
-        
+        self.url = self.config_data['kobo']['url']
+        self.user = self.config_data['kobo']['user']
+        self.password = self.config_data['kobo']['password']
+
         target = self.url + svy_id
         result = requests.get(target, auth=HTTPBasicAuth(self.user, self.password))
 

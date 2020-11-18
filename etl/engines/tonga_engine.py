@@ -4,7 +4,7 @@ import pandas as pd
 import json
 from etl.engines.aw_analytics import OutputLongFormat
 
-class FijiEngine:
+class TongaEngine:
 
     # Set data directory
     datadir = Path.cwd().joinpath('etl', 'data')
@@ -24,34 +24,24 @@ class FijiEngine:
         self.list_of_svy_ids = list_of_svy_ids
 
 
-    def run_fiji_engine(self):
-        fiji_tableau = self.generate_output_long()
-        return fiji_tableau
+    def run_tonga_engine(self):
+        tonga_tableau = self.generate_output_long()
+        return tonga_tableau
 
     def generate_output_long(self):
         combined_df = self.clean_combine()
 
-        # Clean responses between R1 and R2+
-        combined_df.loc[:, 'HHHEdu'] = combined_df.replace({'No Education': 'None', 'Vocational Training': 'Vocational'})
-        combined_df.loc[:, 'HHSchoolSituation'] = combined_df.replace({'attending_school': 'Physically attending',\
-            'no_children': 'No children 5-17 in household', 'other': 'Other', 'remotely_school': 'Learning remotely_school resources',\
-                'remotely_parents': 'Learning remotely_parent resources', 'no_learning': 'No learning activities during the day'})
-        combined_df.loc[:, 'Food_SRf1'] = combined_df.replace({'market': 'Market_grocery', 'own_production': 'Own production',\
-            'other': 'Other', 'gift': 'Gift from family_friends', 'gov': 'Food assistance_Govt', 'religious': 'Religious'})
-        combined_df.loc[:, 'HDwellCond'] = combined_df.replace({'own_house': 'Own', 'rent': 'Rent', 'free': 'Do not own but live for free',\
-            'other': 'Other'})
-        
         print(f'Value Counts: \n {combined_df.Round.value_counts(dropna=False)}')
-
+        
         wt = ['weight_scl']
 
-        ind_vars = ['Total', 'Division','PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\
+        ind_vars = ['Total', 'ADM1INName', 'PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\
                     'HDwellCond', 'CARI_inc_cat', 'HH_Inc_Reduced', 'HHFarm', 'HHIll', 'Food_SRf1', 'HHRemitt_YN', 'HHBorrow']
 
-        cat_vars = ['FCG', 'FG_VitA_Cat', 'FG_Protein_Cat', 'FG_HIron_Cat', 'dep_ratio_cat',\
+        cat_vars = ['FoodInsecure', 'FCG', 'FG_VitA_Cat', 'FG_Protein_Cat', 'FG_HIron_Cat', 'dep_ratio_cat',\
                     'LhCSI_cat', 'Worry_DisruptLiv_Y', 'Worry_FoodShort_Y', 'Worry_FoodPrices_Y', 'Worry_MedShort_Y',\
                 'Worry_DisruptMed_Y', 'Worry_DisruptEdu_Y', 'Worry_Illness_Y', 'Worry_NoWork_Y', 'Worry_TravelRestr_Y',\
-                    'Worry_None_Y', 'Worry_Other_Y', 'rCARI_cat', 'MDDI_Dep_Cat', 'HH_Inc_Reduced', 'WitGenViolence', 'HHSchoolSituation',\
+                    'Worry_None_Y', 'Worry_Other_Y',  'rCARI_cat', 'MDDI_Dep_Cat', 'HH_Inc_Reduced', 'WitGenViolence', 'HHSchoolSituation',\
                     'HHIll', 'Food_SRf1', 'HHhsBedHung_YN', 'HWaterConstrYN', 'HHRemitt_YN', 'HHBorrow']
 
         num_vars = ['FCSStap', 'FCSPulse', 'FCSDairy', 'FCSPr', 'FCSVeg', 'FCSFruit', 'FCSFat', 'FCSSugar', 'FCS_Score', 'FCS_Score', 'rCARI', 'MDDI_Dep_Sum']
@@ -65,7 +55,7 @@ class FijiEngine:
         
 
     def clean_combine(self):
-        # Get list of Fiji analysed datasets
+        # Get list of Tonga analysed datasets
         list_of_dfs = [self.generate_df(svy_id) for svy_id in self.list_of_svy_ids]
 
         # Drop unnecessary columns
@@ -87,8 +77,7 @@ class FijiEngine:
         temp = pd.DataFrame({'count': df.groupby(['Round', 'ADM1INName']).size()}).reset_index()
 
         # Merge in pop data
-        path = self.popdir.joinpath('fiji_pop.csv')  # --> -------------  Production  -------------
-        # path = Path.cwd().joinpath('populations/fiji_pop.csv')
+        path = self.popdir.joinpath('tonga_pop.csv')  # --> -------------  Production  -------------
         country_pop = pd.read_csv(path, dtype={'Pop': 'int32'})
 
         # Add pop to dataset
@@ -124,14 +113,14 @@ class FijiEngine:
         df.loc[:, 'start'] = pd.to_datetime(df.start, utc=True)
 
         # Get survey dates
-        fiji_dates = self.config_data['dates_dict']['Fiji']  # --> Refactor?? Generalise?
+        tonga_dates = self.config_data['dates_dict']['Tonga']  # --> Refactor?? Generalise?
 
         # Generate list of round labels
-        round_label = ['R' + str(i+1) for i in range(len(fiji_dates))]
+        round_label = ['R' + str(i+1) for i in range(len(tonga_dates))]
 
         # Convert dates to datetime
-        start_dates = [pd.to_datetime(fiji_dates[label]['start']).tz_localize(tz='UTC') for label in round_label]
-        end_dates = [pd.to_datetime(fiji_dates[label]['end']).tz_localize(tz='UTC') for label in round_label]
+        start_dates = [pd.to_datetime(tonga_dates[label]['start']).tz_localize(tz='UTC') for label in round_label]
+        end_dates = [pd.to_datetime(tonga_dates[label]['end']).tz_localize(tz='UTC') for label in round_label]
         dates = list(zip(start_dates, end_dates))
 
         # Dynamically generate filter categories
@@ -146,8 +135,7 @@ class FijiEngine:
    
 
     def drop_cols(self, df):
-        keep_cols_path = self.vardir.joinpath('fiji_variables.csv')   # --> -------------  Production  -------------
-        # keep_cols_path = Path.cwd().joinpath('variables/fiji_variables.csv')
+        keep_cols_path = self.vardir.joinpath('tonga_variables.csv')   # --> -------------  Production  -------------
         keep_cols = pd.read_csv(keep_cols_path, header=None)
         keep_cols = keep_cols[0].tolist()
 
@@ -159,20 +147,9 @@ class FijiEngine:
     def generate_df(self, svy_id):
         fn = svy_id + '_analysed' + '.csv'
         path = self.datadir.joinpath(fn)  # --> Production
-        # root = Path('C:\\Users\\Aaron\\Google Drive\\01_PERSONAL\\Programming\\Python\\etl_pipeline\\etl\\data') # --> Testing
-        # path = root.joinpath(fn) # --> Testing
 
         if path.is_file():
             df = pd.read_csv(path)
         else:
             df = None
         return df
-
-
-# list_of_ids = ['556482', '587333']
-
-# obj = FijiEngine(list_of_ids)
-# test = obj.generate_output_long()
-# print(len(test))
-
-

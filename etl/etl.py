@@ -1,31 +1,34 @@
-# from pathlib import Path
-# import pandas as pd
-# import json
-# from extract import ExtractData
-# # import etl.transform as transform
-# # from etl.survey_dict import survey_dict
+import json
+from pathlib import Path
+from etl.extract import ExtractData
+from etl.transform import TransformData
+from etl.load import LoadData
 
 
-# # Get config data
-# config_path = Path.cwd().joinpath('config.json')
-# config_data = json.load(open(config_path))
+class PacificEngine:
 
-# # Get Kobo config
-# url = config_data['kobo']['url']
-# user = config_data['kobo']['user']
-# password = config_data['kobo']['password']
+    # Get config info
+    config_path = Path.cwd().joinpath('config.json')
+    config_data = json.load(open(config_path))
 
-# # Survey Round and ID dictionary
-# round_dict = config_data['round_dict']
+    def __init__(self, ENV):
+        self.ENV = ENV
 
-# class etlEngine:
+    def execute(self):
+        self.etl()
+        return
 
+    def etl(self):
+        self.round_dict = self.config_data['round_dict']
 
+        # Get raw data from API
+        extractObj = ExtractData(self.round_dict)
+        extractObj.extract()
 
+        # Transform Data
+        transformObj = TransformData(self.round_dict)
+        transformObj.transform()
 
-
-
-# if __name__ == "__main__":
-#     # Get raw data from API
-#     extractObj = ExtractData(url, user, password, round_dict)
-#     extractObj.extract()
+        # Load data
+        loadObj = LoadData(self.round_dict, self.ENV)
+        loadObj.load_data()
