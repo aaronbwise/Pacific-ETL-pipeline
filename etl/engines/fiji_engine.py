@@ -43,6 +43,13 @@ class FijiEngine:
         
         print(f'Value Counts: \n {combined_df.Round.value_counts(dropna=False)}')
 
+        # Save combined df
+        fn = 'fiji_analysed_combined.csv'
+        path = self.datadir.joinpath(fn)
+
+        combined_df.to_csv(path, index=False)
+        print('fiji_analysed_combined.csv SAVED!')
+
         wt = ['weight_scl']
 
         ind_vars = ['Total', 'Division','PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\

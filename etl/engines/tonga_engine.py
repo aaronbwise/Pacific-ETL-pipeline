@@ -32,6 +32,13 @@ class TongaEngine:
         combined_df = self.clean_combine()
 
         print(f'Value Counts: \n {combined_df.Round.value_counts(dropna=False)}')
+
+        # Save combined df
+        fn = 'tonga_analysed_combined.csv'
+        path = self.datadir.joinpath(fn)
+
+        combined_df.to_csv(path, index=False)
+        print('tonga_analysed_combined.csv SAVED!')
         
         wt = ['weight_scl']
 

@@ -22,9 +22,6 @@ def fiji_r2_preprocess_data(df, col_mapping_dict, col_order_list):
     df['HHDisabledType_1'] = df.HHDisabledType.str.split(' ').str[0]
     df['HHDisabledType_2'] = df.HHDisabledType.str.split(' ').str[1]
 
-    # # Insert Round
-    # df.insert(0, 'Round', 'R2')
-
     return df
 
 def fiji_r2_clean_data(df, svy_id):

@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 from pathlib import Path
+
 from etl.clean_inputs import CleaningInputs
 
 # Fiji
