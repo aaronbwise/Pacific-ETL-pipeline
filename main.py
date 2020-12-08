@@ -1,7 +1,7 @@
 from etl.etl import PacificEngine
 
 # Value to switch between development (DEV) and production (PROD) databases
-ENV = 'DEV'
+ENV = 'PROD'
 
 def run_engine():
     obj = PacificEngine(ENV)

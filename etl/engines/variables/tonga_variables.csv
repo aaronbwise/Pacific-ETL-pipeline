@@ -1,5 +1,4 @@
 ADM1INName
-start
 CARI_inc_cat
 dep_ratio_cat
 FCG
@@ -17,6 +16,7 @@ FG_Protein_Cat
 FG_VitA_Cat
 Food_SRf1
 FoodInsecure
+FreeResp
 HDwellCond
 HH_04
 HH_Disabled
@@ -27,6 +27,7 @@ HHHEdu
 HHhsBedHung_YN
 HHHSex
 HHIll
+HHIncFirst
 HHRemitt_YN
 HHSchoolSituation
 HWaterConstrYN
@@ -36,8 +37,10 @@ MDDI_Dep_Sum
 PrefLang
 rCARI
 rCARI_cat
+RESPAge
 Round
 Rural
+start
 WitGenViolence
 Worry_DisruptEdu_Y
 Worry_DisruptLiv_Y
