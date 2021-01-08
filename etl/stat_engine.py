@@ -4,7 +4,7 @@ from etl.engines.fiji_engine import FijiEngine
 from etl.engines.samoa_engine import SamoaEngine
 from etl.engines.tonga_engine import TongaEngine
 from etl.engines.kiribati_engine import KiribatiEngine
-
+from etl.engines.vanuatu_engine import VanuatuEngine
 
 class StatEngine:
 
@@ -18,7 +18,8 @@ class StatEngine:
             'Fiji': [self.round_dict[k] for k in self.round_dict.keys() if 'Fiji' in k],
             'Samoa': [self.round_dict[k] for k in self.round_dict.keys() if 'Samoa' in k],
             'Tonga': [self.round_dict[k] for k in self.round_dict.keys() if 'Tonga' in k],
-            'Kiribati': [self.round_dict[k] for k in self.round_dict.keys() if 'Kiribati' in k]
+            'Kiribati': [self.round_dict[k] for k in self.round_dict.keys() if 'Kiribati' in k],
+            'Vanuatu': [self.round_dict[k] for k in self.round_dict.keys() if 'Vanuatu' in k]
         }
 
     def stat_engine(self):
@@ -47,6 +48,10 @@ class StatEngine:
         elif country_name == 'Kiribati':
             obj = KiribatiEngine(self.country_name_id_list_dict[country_name])
             output_tableau = obj.run_kiribati_engine()
+            return output_tableau
+        elif country_name == 'Vanuatu':
+            obj = VanuatuEngine(self.country_name_id_list_dict[country_name])
+            output_tableau = obj.run_vanuatu_engine()
             return output_tableau
         else:
             return None

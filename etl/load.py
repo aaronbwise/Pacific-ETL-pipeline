@@ -54,9 +54,15 @@ class LoadData:
             elif country_name == 'Samoa':
                 output.to_sql('samoa', self.engine, index=False, if_exists='replace', method='multi')
                 print(f'Data for {country_name} was loaded to db successfully!')
+
             elif country_name == 'Kiribati':
                 output.to_sql('kiribati', self.engine, index=False, if_exists='replace', method='multi')
                 print(f'Data for {country_name} was loaded to db successfully!')
+
+            elif country_name == 'Vanuatu':
+                output.to_sql('vanuatu', self.engine, index=False, if_exists='replace', method='multi')
+                print(f'Data for {country_name} was loaded to db successfully!')
+                
             else:
                 print(f'Uh oh! Something went wrong - check tableau_output_dict')
         else:

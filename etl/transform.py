@@ -29,6 +29,10 @@ import etl.analysis.samoa_r2_analysis as s2an
 import etl.cleaning.kiribati_r1_cleaning as k1cl
 import etl.analysis.kiribati_r1_analysis as k1an
 
+# Vanuatu
+import etl.cleaning.vanuatu_r1_cleaning as v1cl
+import etl.analysis.vanuatu_r1_analysis as v1an
+
 
 class TransformData:
 
@@ -67,8 +71,10 @@ class TransformData:
             analysed_df = t2an.tonga_r2_analyze_data(clean_df, svy_id)        
         elif svy_id == '600088':
             analysed_df = s2an.samoa_r2_analyze_data(clean_df, svy_id)
-        elif svy_id == '658085':
+        elif svy_id == '658085' or svy_id == '677137':
             analysed_df = k1an.kiribati_r1_analyze_data(clean_df, svy_id)
+        elif svy_id == '658102' or svy_id == '681686':
+            analysed_df = v1an.vanuatu_r1_analyze_data(clean_df, svy_id)
         else:
             analysed_df = None
         return analysed_df
@@ -89,8 +95,10 @@ class TransformData:
             clean_df = t2cl.tonga_r2_clean_data(t2cl.tonga_r2_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         elif svy_id == '600088': # Samoa_R2+
             clean_df = s2cl.samoa_r2_clean_data(s2cl.samoa_r2_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
-        elif svy_id == '658085': # Kiribati_R1
+        elif svy_id == '658085' or svy_id == '677137': # Kiribati
             clean_df = k1cl.kiribati_r1_clean_data(k1cl.kiribati_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
+        elif svy_id == '658102' or svy_id == '681686': # Vanuatu
+            clean_df = v1cl.vanuatu_r1_clean_data(v1cl.vanuatu_r1_preprocess_data(df, self.cleaning_inputs_dict[svy_id][0], self.cleaning_inputs_dict[svy_id][1]), svy_id)
         else:
             clean_df = None
         return clean_df
