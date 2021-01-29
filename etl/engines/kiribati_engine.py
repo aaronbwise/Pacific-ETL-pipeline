@@ -42,7 +42,7 @@ class KiribatiEngine:
         
         wt = ['weight_scl']
 
-        ind_vars = ['Total', 'ADM1INName', 'PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\
+        ind_vars = ['Total', 'Island_Group', 'PrefLang', 'Rural', 'HHHSex', 'HH_04', 'HH_Disabled', 'dep_ratio_cat', 'HHHEdu',\
                     'HDwellCond', 'CARI_inc_cat', 'HH_Inc_Reduced', 'HHFarm', 'HHIll', 'Food_SRf1', 'HHRemitt_YN', 'HHBorrow']
 
         cat_vars = ['FoodInsecure', 'FCG', 'FG_VitA_Cat', 'FG_Protein_Cat', 'FG_HIron_Cat', 'dep_ratio_cat',\

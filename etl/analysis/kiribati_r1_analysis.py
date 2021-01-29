@@ -8,6 +8,21 @@ datadir = Path.cwd().joinpath('etl', 'data')
 def kiribati_r1_analyze_data(df, svy_id):
     """Function to analyze Kiribati R1 data"""
 
+    ## -- Divison Groups
+    adm_gilbert_north = ['Makin', 'Butaritari', 'Marakei', 'Abaiang', 'North Tarawa', 'South Tarawa (Teinainano)']
+    adm_gilbert_central = ['Maiana', 'Abemama', 'Kuria', 'Aranuka', 'Nonouti']
+    adm_gilbert_south = ['North Tabiteua', 'South Tabiteua', 'Beru', 'Nikunau', 'Onotoa', 'Tamana', 'Banaba (Ocean Island)', 'Arorae']
+    adm_phoenix_line = ['Line + Phoenix Group']
+    
+    conditions = [
+        (df['ADM1INName'].isin(adm_gilbert_north)),
+        (df['ADM1INName'].isin(adm_gilbert_central)),
+        (df['ADM1INName'].isin(adm_gilbert_south)),
+        (df['ADM1INName'].isin(adm_phoenix_line))
+    ]
+    choices = ['Northern Gilberts', 'Central Gilberts', 'Southern Gilberts', 'Line + Phoenix']
+    df['Island_Group'] = np.select(conditions, choices)
+
     ### Create Grouping Variables
     dep_cols = ['HHSize04F', 'HHSize0514F', 'HHSize65aboveF', 'HHSize04M', 'HHSize0514M', 'HHSize65aboveM']
     df[dep_cols] = df[dep_cols].replace({np.nan: 0})
