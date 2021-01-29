@@ -11,9 +11,9 @@ def kiribati_r1_analyze_data(df, svy_id):
     ## -- Divison Groups
     adm_gilbert_north = ['Makin', 'Butaritari', 'Marakei', 'Abaiang', 'North Tarawa', 'South Tarawa (Teinainano)']
     adm_gilbert_central = ['Maiana', 'Abemama', 'Kuria', 'Aranuka', 'Nonouti']
-    adm_gilbert_south = ['North Tabiteua', 'South Tabiteua', 'Beru', 'Nikunau', 'Onotoa', 'Tamana', 'Banaba (Ocean Island)', 'Arorae']
+    adm_gilbert_south = ['North Tabiteuea', 'South Tabiteuea', 'Beru', 'Nikunau', 'Onotoa', 'Tamana', 'Banaba (Ocean Island)', 'Arorae']
     adm_phoenix_line = ['Line + Phoenix Group']
-    
+
     conditions = [
         (df['ADM1INName'].isin(adm_gilbert_north)),
         (df['ADM1INName'].isin(adm_gilbert_central)),
